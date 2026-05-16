@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService, Supplier } from '../../services/data.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-suppliers',
@@ -15,7 +16,40 @@ export class SuppliersComponent {
   openSupplier = signal<Supplier | null>(null);
   showAddModal = signal(false);
 
+  addForm = { name: '', city: '', country: 'Indonesia', contact: '', email: '', phone: '', tax: '', notes: '' };
+
+  private toast = inject(ToastService);
+
   constructor(public data: DataService) {}
+
+  get addValid(): boolean {
+    return !!(this.addForm.name && this.addForm.city && this.addForm.contact && this.validEmail(this.addForm.email));
+  }
+
+  openAdd() {
+    this.addForm = { name: '', city: '', country: 'Indonesia', contact: '', email: '', phone: '', tax: '', notes: '' };
+    this.showAddModal.set(true);
+  }
+
+  saveSupplier() {
+    if (!this.addValid) return;
+    const id = 'sup-' + (this.data.suppliers.length + 1);
+    this.data.suppliers.unshift({
+      id,
+      name: this.addForm.name,
+      city: this.addForm.city,
+      contact: this.addForm.contact,
+      email: this.addForm.email.toLowerCase(),
+      products: 0,
+      ontime: 100,
+    });
+    this.showAddModal.set(false);
+    this.toast.push(`${this.addForm.name} added to suppliers`);
+  }
+
+  private validEmail(s: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim());
+  }
 
   get filtered() {
     const s = this.search().toLowerCase();

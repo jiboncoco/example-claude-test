@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService, User } from '../../services/data.service';
+import { ToastService } from '../../services/toast.service';
 
 interface InviteRow { email: string; name: string; role: string; }
 interface EditForm { name: string; email: string; phone: string; role: string; status: string; }
@@ -42,7 +43,49 @@ export class UsersComponent {
     { user: 'Alesia Karpova', action: 'Created Finance Staff role', module: 'Roles', time: '2026-05-01 10:00' },
   ];
 
+  private toast = inject(ToastService);
+
   constructor(public data: DataService) {}
+
+  private validEmail(s: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim());
+  }
+
+  isInviteRowValid(row: InviteRow): boolean {
+    return !!row.email && this.validEmail(row.email);
+  }
+
+  get hasValidInvites(): boolean {
+    return this.inviteRows.some(r => this.isInviteRowValid(r));
+  }
+
+  private randColor(): string {
+    const colors = ['purple', 'coral', 'yellow', 'green', 'blue', 'pink'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  private deriveInitials(email: string, name: string): string {
+    if (name && name.trim()) {
+      return name.trim().split(/\s+/).map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    }
+    const local = (email.split('@')[0] || '').slice(0, 2);
+    return local.toUpperCase() || 'XX';
+  }
+
+  sendResetLink(u: User) {
+    this.toast.push(`Password reset link sent to ${u.email}`);
+  }
+
+  removeUser(u: User | null) {
+    if (!u) return;
+    const idx = this.data.users.findIndex(x => x.id === u.id);
+    if (idx >= 0) {
+      this.data.users.splice(idx, 1);
+      this.toast.push(`Removed ${u.name}`);
+    }
+    this.showEditModal.set(false);
+    this.openUser.set(null);
+  }
 
   get activeCount() { return this.data.users.filter(u => u.status === 'active').length; }
 
@@ -71,11 +114,16 @@ export class UsersComponent {
   saveEdit() {
     const u = this.editingUser();
     if (!u) return;
+    if (!this.editForm.name || !this.validEmail(this.editForm.email)) {
+      this.toast.push('Name and a valid email are required', 'error');
+      return;
+    }
     u.name = this.editForm.name;
     u.email = this.editForm.email;
     u.role = this.editForm.role;
     u.status = this.editForm.status;
     this.showEditModal.set(false);
+    this.toast.push(`Saved changes to ${u.name}`);
   }
 
   openInvite() {
@@ -87,9 +135,29 @@ export class UsersComponent {
   removeInviteRow(i: number) { this.inviteRows = this.inviteRows.filter((_, idx) => idx !== i); }
 
   sendInvites() {
-    const valid = this.inviteRows.filter(r => r.email.trim());
-    if (!valid.length) return;
+    const valid = this.inviteRows.filter(r => this.isInviteRowValid(r));
+    if (!valid.length) {
+      this.toast.push('Add at least one valid email address', 'error');
+      return;
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    valid.forEach(r => {
+      const initials = this.deriveInitials(r.email, r.name);
+      const id = 'u-' + Math.random().toString(36).slice(2, 7);
+      this.data.users.push({
+        id,
+        name: r.name.trim() || r.email.split('@')[0],
+        email: r.email.trim().toLowerCase(),
+        role: r.role,
+        status: 'active',
+        last: 'Invited just now',
+        joined: today,
+        initials,
+        color: this.randColor(),
+      });
+    });
     this.showInviteModal.set(false);
+    this.toast.push(`Invitations sent to ${valid.length} ${valid.length === 1 ? 'person' : 'people'}`);
   }
 
   avatarColor(color: string): string {

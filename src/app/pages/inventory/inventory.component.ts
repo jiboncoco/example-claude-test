@@ -1,7 +1,8 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService, Product } from '../../services/data.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-inventory',
@@ -64,6 +65,8 @@ export class InventoryComponent {
   get outStock() { return this.data.products.filter(p => p.stock === 0).length; }
   get addValid() { return this.addForm.name && this.addForm.sku && this.addForm.stock && this.addForm.price; }
 
+  private toast = inject(ToastService);
+
   constructor(public data: DataService) {}
 
   toggleSort(key: string) {
@@ -106,12 +109,13 @@ export class InventoryComponent {
     if (!this.addValid) return;
     const id = 'p-' + Math.random().toString(36).slice(2, 7);
     this.data.products.unshift({
-      id, sku: this.addForm.sku, name: this.addForm.name,
+      id, sku: this.addForm.sku.toUpperCase(), name: this.addForm.name,
       category: this.addForm.category, brand: this.addForm.brand,
       supplier: this.addForm.supplier, stock: +this.addForm.stock,
       min: +this.addForm.min, purchase: +this.addForm.purchase,
       price: +this.addForm.price, status: 'active', updated: 'just now', sold30: 0,
     });
     this.showAddModal.set(false);
+    this.toast.push(`${this.addForm.name} added to inventory`);
   }
 }

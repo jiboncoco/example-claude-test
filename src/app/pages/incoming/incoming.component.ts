@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService, IncomingReceipt } from '../../services/data.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-incoming',
@@ -17,8 +18,14 @@ export class IncomingComponent {
 
   newForm = { supplier: 'Northwind Distribution', date: '', items: '', qty: '', value: '', notes: '' };
 
+  private toast = inject(ToastService);
+
   constructor(public data: DataService) {
     this.newForm.date = new Date().toISOString().slice(0, 10);
+  }
+
+  get newValid(): boolean {
+    return !!(this.newForm.supplier && this.newForm.date && this.newForm.items && this.newForm.qty);
   }
 
   get filtered() {
@@ -50,9 +57,11 @@ export class IncomingComponent {
   }
 
   saveReceipt() {
+    if (!this.newValid) return;
     const num = String(this.data.incoming.length + 149).padStart(4, '0');
+    const id = `GR-2026-${num}`;
     this.data.incoming.unshift({
-      id: `GR-2026-0${num}`,
+      id,
       supplier: this.newForm.supplier,
       items: +this.newForm.items || 0,
       qty: +this.newForm.qty || 0,
@@ -62,5 +71,6 @@ export class IncomingComponent {
       notes: this.newForm.notes,
     });
     this.showNewModal.set(false);
+    this.toast.push(`Receipt ${id} created — awaiting QC`);
   }
 }

@@ -307,7 +307,7 @@
       </div>
       <div class="modal-foot">
         <button class="btn btn-ghost" (click)="showNewModal.set(false)">Cancel</button>
-        <button class="btn btn-primary" (click)="saveTx()">
+        <button class="btn btn-primary" [disabled]="!txValid" [style.opacity]="txValid ? 1 : 0.5" [style.cursor]="txValid ? 'pointer' : 'not-allowed'" (click)="saveTx()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           Save transaction
         </button>

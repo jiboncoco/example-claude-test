@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
+import { ToastService } from '../../services/toast.service';
 
 interface ProfileForm {
   name: string;
@@ -39,7 +40,7 @@ interface SecurityPrefs {
 export class ProfileComponent {
   section = signal<'overview'|'account'|'security'|'notifications'|'sessions'|'activity'>('overview');
   showLogoutConfirm = signal(false);
-  copyToast = signal('');
+  private toast = inject(ToastService);
 
   form: ProfileForm = {
     name: 'Alesia Karpova',
@@ -139,25 +140,22 @@ export class ProfileComponent {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(this.form.email).catch(() => {});
     }
-    this.copyToast.set('Email copied to clipboard');
-    setTimeout(() => this.copyToast.set(''), 2200);
+    this.toast.push('Email copied to clipboard');
   }
 
   saveProfile() {
-    this.copyToast.set('Profile updated');
-    setTimeout(() => this.copyToast.set(''), 2200);
+    this.toast.push('Profile updated');
   }
 
   updatePassword() {
-    this.copyToast.set('Password updated');
-    setTimeout(() => this.copyToast.set(''), 2200);
+    this.toast.push('Password updated');
   }
 
   revokeSession(idx: number) {
     if (this.sessions[idx].current) return;
-    this.copyToast.set(`${this.sessions[idx].device} session revoked`);
+    const device = this.sessions[idx].device;
     this.sessions.splice(idx, 1);
-    setTimeout(() => this.copyToast.set(''), 2200);
+    this.toast.push(`${device} session revoked`);
   }
 
   signOutAllOthers() {
@@ -166,8 +164,7 @@ export class ProfileComponent {
       if (!this.sessions[i].current) this.sessions.splice(i, 1);
     }
     const removed = before - this.sessions.length;
-    this.copyToast.set(`${removed} other session${removed !== 1 ? 's' : ''} signed out`);
-    setTimeout(() => this.copyToast.set(''), 2200);
+    this.toast.push(`${removed} other session${removed !== 1 ? 's' : ''} signed out`);
   }
 
   confirmSignOut() {

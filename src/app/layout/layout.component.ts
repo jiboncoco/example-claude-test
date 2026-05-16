@@ -1,7 +1,8 @@
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { DataService } from '../services/data.service';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-layout',
@@ -12,7 +13,7 @@ import { DataService } from '../services/data.service';
 export class LayoutComponent {
   menuOpen = signal(false);
   userMenuOpen = signal(false);
-  toasts = signal<{id: string; msg: string}[]>([]);
+  toast = inject(ToastService);
 
   readonly nav = [
     { path: '/dashboard', label: 'Dashboard', icon: 'grid' },
@@ -64,8 +65,6 @@ export class LayoutComponent {
   }
 
   pushToast(msg: string) {
-    const id = Math.random().toString(36).slice(2);
-    this.toasts.update(t => [...t, { id, msg }]);
-    setTimeout(() => this.toasts.update(t => t.filter(x => x.id !== id)), 2800);
+    this.toast.push(msg);
   }
 }

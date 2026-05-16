@@ -13,6 +13,7 @@ export class LoginComponent {
   form: FormGroup;
   loading = signal(false);
   errorMessage = '';
+  resetSent = signal(false);
   showPassword = false;
 
   constructor(private fb: FormBuilder, private router: Router) {
@@ -32,6 +33,7 @@ export class LoginComponent {
     }
     this.loading.set(true);
     this.errorMessage = '';
+    this.resetSent.set(false);
     setTimeout(() => {
       this.loading.set(false);
       this.router.navigate(['/']);
@@ -41,9 +43,11 @@ export class LoginComponent {
   forgotPassword(): void {
     if (!this.email.value || this.email.invalid) {
       this.errorMessage = 'Enter your work email above first.';
+      this.email.markAsTouched();
       return;
     }
     this.errorMessage = '';
-    alert(`Password reset instructions sent to ${this.email.value}`);
+    this.resetSent.set(true);
+    setTimeout(() => this.resetSent.set(false), 4500);
   }
 }

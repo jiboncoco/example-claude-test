@@ -99,6 +99,14 @@
           </div>
         }
 
+        <!-- Reset link sent -->
+        @if (resetSent()) {
+          <div class="flex items-center gap-2 text-[12.5px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Reset instructions sent to <b>{{ email.value }}</b>.</span>
+          </div>
+        }
+
         <!-- Submit -->
         <button
           type="submit"

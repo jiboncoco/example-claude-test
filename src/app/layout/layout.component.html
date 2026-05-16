@@ -188,9 +188,14 @@
 
 <!-- Toast -->
 <div class="toast-wrap">
-  @for (t of toasts(); track t.id) {
+  @for (t of toast.toasts(); track t.id) {
     <div class="toast">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34c38f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+      @switch (t.variant) {
+        @case ('error') { <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> }
+        @case ('warn') { <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18v.01"/></svg> }
+        @case ('info') { <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> }
+        @default { <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34c38f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg> }
+      }
       {{ t.msg }}
     </div>
   }
