@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <div class="card" style="padding:0; overflow:hidden;">
+  <div class="card card-flush">
     <div class="page-tabs" style="padding:0 16px;">
       <button class="page-tab" [class.active]="activeTab() === 'customer'" (click)="activeTab.set('customer')">Customer Returns <span class="tab-count">{{ data.customerReturns.length }}</span></button>
       <button class="page-tab" [class.active]="activeTab() === 'supplier'" (click)="activeTab.set('supplier')">Supplier Returns <span class="tab-count">{{ data.supplierReturns.length }}</span></button>

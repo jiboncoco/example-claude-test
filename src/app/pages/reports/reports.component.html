@@ -51,7 +51,7 @@
   <!-- Report cards grid -->
   <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:16px;">
     @for (r of data.reportTypes; track r.id) {
-      <div class="card" style="display:flex; gap:16px; cursor:pointer; align-items:flex-start;">
+      <div class="card card-link" style="display:flex; gap:16px; align-items:flex-start;">
         <div [class]="iconColor(r.color)" style="width:44px; height:44px; border-radius:10px; flex-shrink:0;">
           @switch (r.icon) {
             @case ('box') {

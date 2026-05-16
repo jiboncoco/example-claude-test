@@ -52,7 +52,7 @@
   </div>
 
   <!-- Card with toolbar + content -->
-  <div class="card" style="padding:0; overflow:hidden;">
+  <div class="card card-flush">
     <div class="table-toolbar">
       <div class="search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -76,7 +76,7 @@
     @if (view() === 'grid') {
       <div style="padding:20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
         @for (s of filtered; track s.id) {
-          <div class="card" style="cursor:pointer; padding:20px;" (click)="openSupplier.set(s)">
+          <div class="card card-link" style="padding:20px;" (click)="openSupplier.set(s)">
             <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:14px;">
               <div class="stat-icon" [class]="colorFor(s.id)" style="width:44px; height:44px; border-radius:8px; font-size:14px; font-weight:600;">{{ initials(s.name) }}</div>
               <div style="flex:1; min-width:0;">

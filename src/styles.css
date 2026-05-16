@@ -132,6 +132,7 @@ a { color: inherit; text-decoration: none; }
 .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-purple); display: grid; place-items: center; color: white; font-weight: 600; font-size: 12px; flex: 0 0 32px; }
 .avatar.lg { width: 40px; height: 40px; flex-basis: 40px; font-size: 14px; }
 .avatar.xl { width: 56px; height: 56px; flex-basis: 56px; font-size: 19px; border-radius: 14px; }
+.avatar.xxl { width: 88px; height: 88px; flex-basis: 88px; font-size: 32px; border-radius: 22px; }
 .user-pill-name { font-size: 13px; font-weight: 600; }
 .user-pill-role { font-size: 11px; color: var(--text-faint); }
 
@@ -164,6 +165,12 @@ a { color: inherit; text-decoration: none; }
 .card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
 .card-title { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin: 0; color: var(--text); }
 .card-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+/* Card variants */
+.card-flush { padding: 0; overflow: hidden; }
+.card-dashed { border: 2px dashed var(--border-strong); background: var(--surface-alt); box-shadow: none; }
+.card-link { cursor: pointer; transition: border-color 120ms ease; }
+.card-link:hover { border-color: var(--border-strong); }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; transition: background 100ms, box-shadow 100ms; border: 1px solid transparent; white-space: nowrap; line-height: 1.4; }
@@ -332,7 +339,7 @@ table.data-table tbody tr:hover { background: var(--surface-alt); }
 
 /* Profile */
 .profile-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: flex-start; }
-.profile-card-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px; gap: 12px; padding-bottom: 0; }
+.profile-card-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px; gap: 12px; }
 .profile-hero-name { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
 .profile-hero-role { font-size: 13px; color: var(--text-muted); }
 .profile-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-top: 1px solid var(--border); margin: 4px -24px -24px; }
