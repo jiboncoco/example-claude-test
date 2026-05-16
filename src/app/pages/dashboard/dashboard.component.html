@@ -6,11 +6,11 @@
     </div>
     <div style="display:flex; gap:10px;">
       <button class="btn btn-ghost" (click)="navigate('/reports')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
         Export
       </button>
       <button class="btn btn-primary" (click)="navigate('/incoming')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
         New receipt
       </button>
     </div>
@@ -21,33 +21,25 @@
     @for (r of recents; track r.label) {
       <div class="recent-card">
         <div class="recent-card-head">
-          <div class="recent-card-icon stat-icon" [class]="r.color">
+          <div class="recent-card-icon stat-icon {{ r.color }}">
             @switch (r.icon) {
-              @case ('box') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-              }
-              @case ('tag') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-              }
-              @case ('inbox') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-              }
-              @case ('users') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              }
+              @case ('box') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg> }
+              @case ('tag') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12L12 20l-9-9V3h8l9 9z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg> }
+              @case ('inbox') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h4l2 3h6l2-3h4"/><path d="M5 5h14l2 8v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6l2-8z"/></svg> }
+              @case ('users') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><circle cx="17" cy="6" r="3"/><path d="M16 14a5 5 0 0 1 6 5"/></svg> }
             }
           </div>
           <div style="flex:1; min-width:0;">
-            <div class="recent-card-title">{{ r.kind }}</div>
-            <div class="recent-card-desc">{{ r.label }}</div>
+            <div class="recent-card-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.kind }}</div>
+            <div class="recent-card-desc" style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">{{ r.label }}</div>
           </div>
           <button class="icon-btn" style="width:28px; height:28px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
           </button>
         </div>
         <div class="recent-card-meta">
           <span class="pill pill-gray">{{ r.time }}</span>
-          <span class="pill" [class]="'pill-' + r.color">{{ r.tag }}</span>
+          <span class="pill pill-{{ r.color }}">{{ r.tag }}</span>
           <span style="font-size:11px; color:var(--text-muted); margin-left:auto;">{{ r.who }}</span>
         </div>
       </div>
@@ -56,23 +48,23 @@
 
   <!-- Charts row -->
   <div class="col-2">
-    <!-- Area chart -->
+    <!-- User Stat area chart -->
     <div class="card chart-card">
       <div class="card-header">
         <div>
-          <h3 class="card-title">User Activity</h3>
+          <h3 class="card-title">User Stat</h3>
           <div class="card-sub">Active users on the CMS over 31 days</div>
         </div>
         <div style="display:flex; gap:4px; padding:4px; background:var(--surface-alt); border-radius:10px;">
           @for (p of ['Weekly','Monthly','Yearly']; track p) {
-            <button class="btn btn-sm" [class.btn-primary]="p === 'Monthly'" [style.background]="p !== 'Monthly' ? 'transparent' : ''" [style.color]="p !== 'Monthly' ? 'var(--text-muted)' : ''">{{ p }}</button>
+            <button class="btn btn-sm" [class.btn-primary]="period() === p" [style.background]="period() !== p ? 'transparent' : ''" [style.color]="period() !== p ? 'var(--text-muted)' : ''" [style.box-shadow]="period() !== p ? 'none' : ''" (click)="period.set($any(p))">{{ p }}</button>
           }
         </div>
       </div>
       <svg viewBox="0 0 760 280" width="100%" height="280" preserveAspectRatio="none">
         <defs>
           <linearGradient id="area-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.28"/>
+            <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.32"/>
             <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
           </linearGradient>
         </defs>
@@ -80,17 +72,25 @@
           <line [attr.x1]="36" [attr.x2]="744" [attr.y1]="20 + (1 - t/550) * 232" [attr.y2]="20 + (1 - t/550) * 232" stroke="var(--border)" stroke-dasharray="3 4"/>
           <text [attr.x]="28" [attr.y]="24 + (1 - t/550) * 232" font-size="10" fill="var(--text-faint)" text-anchor="end">{{ t }}</text>
         }
+        @for (x of [9,11,13,15,17,19,21,23,25,27,29,31]; track x; let i = $index) {
+          <text [attr.x]="36 + (i / 11) * 708" y="272" font-size="10" fill="var(--text-faint)" text-anchor="middle">{{ x }}</text>
+        }
         <path [attr.d]="areaPath" fill="url(#area-fill)"/>
         <path [attr.d]="linePath" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linejoin="round"/>
       </svg>
     </div>
 
-    <!-- Stats card -->
+    <!-- Statistics card -->
     <div class="card">
       <div class="card-header">
         <div>
           <h3 class="card-title">Statistics</h3>
-          <div class="card-sub">User segments · today</div>
+          <div class="card-sub">User segments • {{ statsTab().toLowerCase() }}</div>
+        </div>
+        <div style="display:flex; gap:4px; padding:4px; background:var(--surface-alt); border-radius:10px;">
+          @for (t of ['New','Today','Month']; track t) {
+            <button class="btn btn-sm" [class.btn-primary]="statsTab() === t" [style.background]="statsTab() !== t ? 'transparent' : ''" [style.color]="statsTab() !== t ? 'var(--text-muted)' : ''" [style.box-shadow]="statsTab() !== t ? 'none' : ''" (click)="statsTab.set($any(t))">{{ t }}</button>
+          }
         </div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:center;">
@@ -105,12 +105,11 @@
             </div>
           }
         </div>
-        <!-- Simple bar chart -->
-        <svg viewBox="0 0 120 200" width="100%" height="200" preserveAspectRatio="none">
+        <svg viewBox="0 0 320 220" width="100%" height="220" preserveAspectRatio="none">
           @for (s of data.statsToday; track s.name; let i = $index) {
-            <rect [attr.x]="i * 28 + 4" y="20" width="16" height="160" rx="8" fill="var(--surface-alt)"/>
-            <rect [attr.x]="i * 28 + 4" [attr.y]="20 + 160 * (1 - s.pct/100)" width="16" [attr.height]="160 * s.pct/100" rx="8" [attr.fill]="s.color"/>
-            <text [attr.x]="i * 28 + 12" y="195" font-size="9" [attr.fill]="s.color" text-anchor="middle" font-weight="600">{{ s.pct }}%</text>
+            <rect [attr.x]="i * 80 + 24" y="20" width="40" height="170" rx="20" fill="var(--surface-alt)"/>
+            <rect [attr.x]="i * 80 + 24" [attr.y]="20 + 170 * (1 - s.pct/100)" width="40" [attr.height]="170 * s.pct/100" rx="20" [attr.fill]="s.color"/>
+            <text [attr.x]="i * 80 + 44" y="208" font-size="11" fill="var(--text-muted)" text-anchor="middle" font-weight="600">{{ s.pct }}%</text>
           }
         </svg>
       </div>
@@ -122,14 +121,29 @@
     @for (t of tiles; track t.label) {
       <div class="stat-tile">
         <div class="stat-tile-head">
-          <div class="stat-icon" [class]="t.color">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <div class="stat-icon {{ t.color }}">
+            @switch (t.icon) {
+              @case ('box') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg> }
+              @case ('inbox') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h4l2 3h6l2-3h4"/><path d="M5 5h14l2 8v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6l2-8z"/></svg> }
+              @case ('shop') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v11h18V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg> }
+              @case ('rotate') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg> }
+            }
           </div>
+          <button class="icon-btn" style="width:28px; height:28px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+          </button>
         </div>
         <div class="stat-label">{{ t.label }}</div>
         <div style="display:flex; align-items:baseline; justify-content:space-between;">
           <div class="stat-value">{{ t.val }}</div>
-          <div class="stat-delta" [class.up]="t.up" [class.down]="!t.up">{{ t.delta }}</div>
+          <div class="stat-delta" [class.up]="t.up" [class.down]="!t.up">
+            @if (t.up) {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+            } @else {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            }
+            {{ t.delta }}
+          </div>
         </div>
       </div>
     }
@@ -142,20 +156,36 @@
         <div class="donut-tile-head">
           <div>
             <div class="donut-tile-name">{{ d.label }}</div>
-            <div style="font-size:18px; font-weight:700; margin-top:2px;" [style.color]="d.color">{{ d.pct }}%</div>
+            <div style="font-size:22px; font-weight:700; margin-top:2px; letter-spacing:-0.01em;" [style.color]="d.solidColor">{{ d.pct }}%</div>
           </div>
+          <button class="icon-btn" style="width:28px; height:28px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+          </button>
         </div>
         <div class="donut-graphic">
-          <!-- SVG donut -->
           <svg width="112" height="112" viewBox="0 0 112 112">
-            <circle cx="56" cy="56" r="46" fill="none" stroke="var(--surface-alt)" stroke-width="12"/>
-            <circle cx="56" cy="56" r="46" fill="none" [attr.stroke]="d.color" stroke-width="12"
-              [attr.stroke-dasharray]="2 * 3.14159 * 46 * d.pct / 100 + ' ' + 2 * 3.14159 * 46"
-              stroke-linecap="round" transform="rotate(-90 56 56)"/>
+            <defs>
+              <radialGradient [id]="donutGradId(d.label)" cx="50%" cy="50%" r="50%">
+                <stop offset="65%" [attr.stop-color]="d.solidColor" stop-opacity="0"/>
+                <stop offset="100%" [attr.stop-color]="d.solidColor" stop-opacity="0.12"/>
+              </radialGradient>
+            </defs>
+            <circle cx="56" cy="56" r="50" fill="none" stroke="var(--surface-alt)" stroke-width="12"/>
+            <circle cx="56" cy="56" r="50" fill="none" [attr.stroke]="d.solidColor" stroke-width="12"
+              [attr.stroke-dasharray]="donutDash(d.pct)" stroke-linecap="round" transform="rotate(-90 56 56)"/>
+            <circle cx="56" cy="56" r="40" [attr.fill]="'url(#' + donutGradId(d.label) + ')'"/>
+            <!-- center arrow up-right -->
+            <g transform="translate(48 48)" [attr.stroke]="d.solidColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M5 11L11 5"/>
+              <path d="M5 5h6v6"/>
+            </g>
           </svg>
         </div>
         <div style="font-size:20px; font-weight:700; text-align:center; letter-spacing:-0.01em;">{{ d.val }}</div>
-        <button class="donut-cta" [style.color]="d.color" [style.border-color]="d.color">View All</button>
+        <button class="donut-cta" [style.color]="d.solidColor">
+          View All
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
       </div>
     }
   </div>
@@ -169,7 +199,10 @@
           <h3 class="card-title">Marketplace performance</h3>
           <div class="card-sub">Last 30 days · revenue &amp; order count</div>
         </div>
-        <button class="btn btn-ghost btn-sm" (click)="navigate('/outgoing')">View channel</button>
+        <button class="btn btn-ghost btn-sm" (click)="navigate('/outgoing')">
+          View channel
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </button>
       </div>
       <table class="data-table" style="margin:-20px -20px -20px -20px; width:calc(100% + 40px);">
         <thead>
@@ -178,6 +211,7 @@
             <th>Orders (30d)</th>
             <th>Revenue</th>
             <th>Share</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -185,7 +219,7 @@
             <tr>
               <td style="padding-left:20px;">
                 <div style="display:flex; align-items:center; gap:10px;">
-                  <div class="mp-logo" [style.background]="m.color">{{ m.initials }}</div>
+                  <div class="mp-logo" style="width:28px; height:28px; flex:0 0 28px;" [style.background]="m.color">{{ m.initials }}</div>
                   <span class="cell-strong">{{ m.name }}</span>
                 </div>
               </td>
@@ -198,6 +232,11 @@
                   </div>
                   <span class="cell-muted tnum" style="font-size:11.5px; min-width:26px;">{{ marketShare(m.revenue) }}%</span>
                 </div>
+              </td>
+              <td>
+                <button class="icon-btn" style="width:28px; height:28px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+                </button>
               </td>
             </tr>
           }

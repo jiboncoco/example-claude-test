@@ -277,7 +277,8 @@ table.data-table tbody tr:hover { background: var(--surface-alt); }
 .donut-tile-head { display: flex; align-items: center; justify-content: space-between; }
 .donut-tile-name { font-size: 14px; font-weight: 600; }
 .donut-graphic { display: flex; justify-content: center; padding: 4px 0 8px; }
-.donut-cta { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 4px; border: 1px solid; border-radius: 6px; padding: 4px 10px; background: transparent; }
+.donut-cta { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 4px; border: none; padding: 0; background: transparent; cursor: pointer; }
+.donut-cta:hover { filter: brightness(0.85); }
 
 /* Marketplace logo */
 .mp-logo { width: 32px; height: 32px; border-radius: 6px; display: grid; place-items: center; font-weight: 600; font-size: 12px; color: white; flex: 0 0 32px; }

@@ -2,7 +2,7 @@
   <div class="page-header">
     <div>
       <h1 class="page-title">Incoming Goods</h1>
-      <div class="page-sub">{{ data.incoming.length }} receipts · {{ data.formatIDR(totalValue()) }} total value</div>
+      <div class="page-sub">Track all supplier receipts. Stock auto-updates on confirmation.</div>
     </div>
     <div style="display:flex; gap:10px;">
       <button class="btn btn-ghost">
@@ -19,32 +19,38 @@
   <!-- Stat tiles -->
   <div class="stat-grid">
     <div class="stat-tile">
-      <div class="stat-tile-head"><div class="stat-icon purple">
-        <!-- Inbox -->
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-      </div></div>
-      <div class="stat-label">Total Receipts</div><div class="stat-value">{{ data.incoming.length }}</div>
-    </div>
-    <div class="stat-tile">
       <div class="stat-tile-head"><div class="stat-icon green">
-        <!-- Check -->
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h4l2 3h6l2-3h4"/><path d="M5 5h14l2 8v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6l2-8z"/></svg>
       </div></div>
-      <div class="stat-label">Received</div><div class="stat-value">{{ receivedCount }}</div>
+      <div class="stat-label">Receipts (30d)</div>
+      <div style="display:flex; align-items:baseline; justify-content:space-between;">
+        <div class="stat-value">{{ data.incoming.length }}</div>
+        <div class="stat-delta up">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+          +12%
+        </div>
+      </div>
     </div>
     <div class="stat-tile">
-      <div class="stat-tile-head"><div class="stat-icon blue">
-        <!-- Pie chart slice = partial -->
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+      <div class="stat-tile-head"><div class="stat-icon purple">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
       </div></div>
-      <div class="stat-label">Partial</div><div class="stat-value">{{ partialCount }}</div>
+      <div class="stat-label">Items received</div>
+      <div class="stat-value">{{ totalItemsReceived.toLocaleString() }}</div>
     </div>
     <div class="stat-tile">
       <div class="stat-tile-head"><div class="stat-icon yellow">
-        <!-- Clock -->
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
       </div></div>
-      <div class="stat-label">Pending QC</div><div class="stat-value">{{ pendingCount }}</div>
+      <div class="stat-label">Total value</div>
+      <div class="stat-value">{{ data.formatIDR(totalValue()) }}</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-head"><div class="stat-icon coral">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18v.01"/></svg>
+      </div></div>
+      <div class="stat-label">Pending QC</div>
+      <div class="stat-value">{{ pendingCount }}</div>
     </div>
   </div>
 

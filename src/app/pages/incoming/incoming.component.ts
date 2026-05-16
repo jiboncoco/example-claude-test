@@ -50,6 +50,7 @@ export class IncomingComponent {
   get receivedCount() { return this.data.incoming.filter(r => r.status === 'received').length; }
   get partialCount() { return this.data.incoming.filter(r => r.status === 'partial').length; }
   get pendingCount() { return this.data.incoming.filter(r => r.status === 'pending').length; }
+  get totalItemsReceived() { return this.data.incoming.reduce((a, b) => a + b.qty, 0); }
 
   openNew() {
     this.newForm = { supplier: 'Northwind Distribution', date: new Date().toISOString().slice(0, 10), items: '', qty: '', value: '', notes: '' };

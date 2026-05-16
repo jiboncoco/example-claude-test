@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
@@ -10,6 +10,9 @@ import { DataService } from '../../services/data.service';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
+  period = signal<'Weekly'|'Monthly'|'Yearly'>('Monthly');
+  statsTab = signal<'New'|'Today'|'Month'>('Today');
+
   readonly tiles = [
     { label: 'Total Stock', val: '24,812', delta: '+4.2%', up: true, icon: 'box', color: 'purple' },
     { label: 'Incoming (30d)', val: '3,148', delta: '+12.4%', up: true, icon: 'inbox', color: 'green' },
@@ -25,16 +28,15 @@ export class DashboardComponent {
   ];
 
   readonly donuts = [
-    { label: 'Stock Value', pct: 50, val: 'Rp 1.2B', color: '#4f46e5' },
-    { label: 'Online Sales', pct: 85, val: 'Rp 312M', color: '#dc2626' },
-    { label: 'Pending Orders', pct: 70, val: '1,345', color: '#d97706' },
-    { label: 'Returns Rate', pct: 12, val: '1.8%', color: '#db2777' },
+    { label: 'Comments', pct: 50, val: '12,200', color: 'var(--accent-purple)', solidColor: '#4f46e5' },
+    { label: 'Posts',    pct: 85, val: '12,456', color: 'var(--accent-coral)',  solidColor: '#dc2626' },
+    { label: 'Pages',    pct: 70, val: '1,345',  color: 'var(--accent-yellow)', solidColor: '#d97706' },
+    { label: 'Categories', pct: 60, val: '1,200', color: 'var(--accent-pink)',  solidColor: '#db2777' },
   ];
 
   readonly seriesPoints: [number, number][];
 
   constructor(public data: DataService, private router: Router) {
-    // Pre-compute area chart points
     const series = data.userStatSeries;
     const W = 760, H = 280;
     const pad = { l: 36, r: 16, t: 20, b: 28 };
@@ -63,6 +65,15 @@ export class DashboardComponent {
 
   marketShare(revenue: number): number {
     return Math.round(revenue / this.totalMarketRevenue * 100);
+  }
+
+  donutDash(pct: number): string {
+    const r = 50, c = 2 * Math.PI * r;
+    return `${(pct / 100) * c} ${c}`;
+  }
+
+  donutGradId(label: string): string {
+    return 'dg-' + label.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
   get lowStock() {
