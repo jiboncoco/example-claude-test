@@ -1,0 +1,43 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Suppliers</h1>
+      <div class="page-sub">{{ data.suppliers.length }} active suppliers</div>
+    </div>
+    <button class="btn btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add supplier
+    </button>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Supplier</th>
+          <th>City</th>
+          <th>Contact</th>
+          <th>Email</th>
+          <th style="text-align:right;">Products</th>
+          <th style="text-align:right;">On-time %</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of data.suppliers; track s.id) {
+          <tr>
+            <td class="cell-strong">{{ s.name }}</td>
+            <td class="cell-muted">{{ s.city }}</td>
+            <td>{{ s.contact }}</td>
+            <td class="cell-mono" style="font-size:12px;">{{ s.email }}</td>
+            <td class="tnum" style="text-align:right;">{{ s.products }}</td>
+            <td style="text-align:right;">
+              <span class="pill" [class]="s.ontime >= 94 ? 'pill-green' : s.ontime >= 90 ? 'pill-yellow' : 'pill-coral'">{{ s.ontime }}%</span>
+            </td>
+            <td><button class="icon-btn" style="width:30px; height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

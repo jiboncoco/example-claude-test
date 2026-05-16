@@ -1,0 +1,101 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Returns</h1>
+      <div class="page-sub">Customer returns, supplier returns &amp; damaged goods</div>
+    </div>
+    <button class="btn btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New return
+    </button>
+  </div>
+
+  <div class="page-tabs">
+    <button class="page-tab" [class.active]="activeTab() === 'customer'" (click)="activeTab.set('customer')">Customer Returns <span class="tab-count">{{ data.customerReturns.length }}</span></button>
+    <button class="page-tab" [class.active]="activeTab() === 'supplier'" (click)="activeTab.set('supplier')">Supplier Returns <span class="tab-count">{{ data.supplierReturns.length }}</span></button>
+    <button class="page-tab" [class.active]="activeTab() === 'damaged'" (click)="activeTab.set('damaged')">Damaged Goods <span class="tab-count">{{ data.damagedGoods.length }}</span></button>
+  </div>
+
+  @if (activeTab() === 'customer') {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Return ID</th><th>Customer</th><th>Product</th><th style="text-align:center;">Qty</th>
+            <th style="text-align:right;">Value</th><th>Reason</th><th>Method</th><th>Date</th><th>Status</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of data.customerReturns; track r.id) {
+            <tr>
+              <td class="cell-mono cell-strong">{{ r.id }}</td>
+              <td class="cell-strong">{{ r.customer }}</td>
+              <td style="max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.product }}</td>
+              <td class="tnum" style="text-align:center;">{{ r.qty }}</td>
+              <td class="tnum cell-strong" style="text-align:right;">{{ data.formatIDR(r.value) }}</td>
+              <td class="cell-muted" style="font-size:12px;">{{ r.reason }}</td>
+              <td style="font-size:12px;">{{ r.method }}</td>
+              <td class="cell-muted">{{ r.date }}</td>
+              <td><span [class]="statusClass(r.status)"><span class="pill-dot"></span>{{ r.status }}</span></td>
+              <td><button class="icon-btn" style="width:30px; height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (activeTab() === 'supplier') {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Return ID</th><th>Supplier</th><th>Reason</th>
+            <th style="text-align:center;">Items</th><th style="text-align:right;">Value</th><th>Date</th><th>Status</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of data.supplierReturns; track r.id) {
+            <tr>
+              <td class="cell-mono cell-strong">{{ r.id }}</td>
+              <td class="cell-strong">{{ r.supplier }}</td>
+              <td class="cell-muted" style="font-size:12px;">{{ r.reason }}</td>
+              <td class="tnum" style="text-align:center;">{{ r.items }} items · {{ r.qty }} units</td>
+              <td class="tnum cell-strong" style="text-align:right;">{{ data.formatIDR(r.value) }}</td>
+              <td class="cell-muted">{{ r.date }}</td>
+              <td><span [class]="statusClass(r.status)"><span class="pill-dot"></span>{{ r.status }}</span></td>
+              <td><button class="icon-btn" style="width:30px; height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (activeTab() === 'damaged') {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Supplier</th><th>Reason</th>
+            <th style="text-align:right;">Qty</th><th style="text-align:right;">Value</th><th>Date</th><th>Status</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of data.damagedGoods; track d.id) {
+            <tr>
+              <td class="cell-mono cell-strong">{{ d.id }}</td>
+              <td class="cell-strong">{{ d.supplier }}</td>
+              <td class="cell-muted" style="font-size:12px;">{{ d.reason }}</td>
+              <td class="tnum" style="text-align:right;">{{ d.qty }}</td>
+              <td class="tnum cell-strong" style="text-align:right;">{{ data.formatIDR(d.value) }}</td>
+              <td class="cell-muted">{{ d.date }}</td>
+              <td><span [class]="statusClass(d.status)"><span class="pill-dot"></span>{{ d.status }}</span></td>
+              <td><button class="icon-btn" style="width:30px; height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

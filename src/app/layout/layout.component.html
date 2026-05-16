@@ -1,0 +1,185 @@
+<div class="app" [class.menu-open]="menuOpen()">
+  <!-- Sidebar backdrop (mobile) -->
+  @if (menuOpen()) {
+    <div class="sidebar-backdrop" (click)="menuOpen.set(false)"></div>
+  }
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="menuOpen()">
+    <button class="sidebar-close icon-btn" (click)="menuOpen.set(false)" aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Brand -->
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">W</div>
+      <div>
+        <div class="sidebar-brand-name">WareSync</div>
+        <div class="sidebar-brand-sub">Stock &amp; sales CMS</div>
+      </div>
+    </div>
+
+    <!-- Workspace nav -->
+    <div class="sidebar-section-label">Workspace</div>
+    @for (item of nav; track item.path) {
+      <a class="nav-item" [routerLink]="item.path" routerLinkActive="active" (click)="menuOpen.set(false)">
+        <span class="nav-icon">
+          <ng-container [ngTemplateOutlet]="iconTpl" [ngTemplateOutletContext]="{name: item.icon, size: 17}"></ng-container>
+        </span>
+        <span>{{ item.label }}</span>
+        @if (item.badge) { <span class="nav-badge">{{ item.badge }}</span> }
+        @if (item.count != null) { <span class="nav-count">{{ item.count }}</span> }
+      </a>
+    }
+
+    <!-- Operations nav -->
+    <div class="sidebar-section-label">Operations</div>
+    @for (item of ops; track item.path) {
+      <a class="nav-item" [routerLink]="item.path" routerLinkActive="active" (click)="menuOpen.set(false)">
+        <span class="nav-icon">
+          <ng-container [ngTemplateOutlet]="iconTpl" [ngTemplateOutletContext]="{name: item.icon, size: 17}"></ng-container>
+        </span>
+        <span>{{ item.label }}</span>
+        @if (item.count != null) { <span class="nav-count">{{ item.count }}</span> }
+      </a>
+    }
+
+    <div style="flex:1"></div>
+
+    <!-- Support card -->
+    <div class="card" style="padding:14px; background:linear-gradient(135deg, var(--accent-purple-soft), var(--accent-pink-soft)); border:none;">
+      <div style="font-size:12px; font-weight:700; margin-bottom:4px;">Need a hand?</div>
+      <div style="font-size:11.5px; color:var(--text-muted); margin-bottom:10px; line-height:1.5;">Open a ticket — we typically reply in under an hour.</div>
+      <button class="btn btn-soft btn-sm" style="background:rgba(255,255,255,0.7); width:100%; justify-content:center;">Get support</button>
+    </div>
+  </aside>
+
+  <!-- Main column -->
+  <div style="min-width:0; display:flex; flex-direction:column;">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="icon-btn topbar-menu" (click)="toggleMenu()" aria-label="Toggle menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          @if (menuOpen()) {
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          } @else {
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          }
+        </svg>
+      </button>
+
+      <div class="topbar-title">{{ getPageTitle() }}</div>
+
+      <div class="topbar-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input [placeholder]="'Search ' + getPageTitle().toLowerCase() + '… (⌘K)'"/>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="icon-btn topbar-filter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </button>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="dot"></span>
+        </button>
+
+        <!-- User menu -->
+        <div class="user-menu">
+          <div class="user-pill" [class.open]="userMenuOpen()" (click)="toggleUserMenu()">
+            <div class="avatar" style="background:linear-gradient(135deg, var(--accent-purple), var(--accent-coral))">{{ data.currentUser.initials }}</div>
+            <div class="user-pill-text">
+              <div class="user-pill-name">{{ data.currentUser.short }}</div>
+              <div class="user-pill-role">{{ data.currentUser.role }}</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+
+          @if (userMenuOpen()) {
+            <div class="user-menu-pop">
+              <div class="user-menu-head">
+                <div class="avatar lg" style="background:linear-gradient(135deg, var(--accent-purple), var(--accent-coral))">{{ data.currentUser.initials }}</div>
+                <div style="min-width:0; flex:1;">
+                  <div style="font-size:13.5px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ data.currentUser.name }}</div>
+                  <div style="font-size:12px; color:var(--text-muted);">{{ data.currentUser.email }}</div>
+                  <span class="pill pill-purple" style="margin-top:6px; font-size:10.5px;">{{ data.currentUser.role }}</span>
+                </div>
+              </div>
+              <div class="user-menu-section">
+                <button class="user-menu-item" (click)="navigate('/profile')">
+                  <span class="user-menu-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                  <span style="flex:1">My profile</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+                <button class="user-menu-item" (click)="navigate('/users')">
+                  <span class="user-menu-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                  <span style="flex:1">Workspace members</span>
+                </button>
+              </div>
+              <div class="user-menu-section danger">
+                <button class="user-menu-item danger" (click)="logout()">
+                  <span class="user-menu-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+                  <span style="flex:1; text-align:left;">Sign out</span>
+                  <span class="kbd">⇧⌘Q</span>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<!-- Toast notifications -->
+<div class="toast-wrap">
+  @for (t of toasts(); track t.id) {
+    <div class="toast">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34c38f" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      {{ t.msg }}
+    </div>
+  }
+</div>
+
+<!-- Icon template -->
+<ng-template #iconTpl let-name="name" let-size="size">
+  @switch (name) {
+    @case ('grid') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    }
+    @case ('box') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+    }
+    @case ('inbox') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+    }
+    @case ('truck') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    }
+    @case ('chart') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    }
+    @case ('users') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    }
+    @case ('building') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="9" width="18" height="13"/><path d="M8 22V12h8v10"/><path d="M3 9l9-7 9 7"/></svg>
+    }
+    @case ('shop') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    }
+    @case ('rotate') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+    }
+    @case ('flag') {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+    }
+    @default {
+      <svg [attr.width]="size" [attr.height]="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg>
+    }
+  }
+</ng-template>

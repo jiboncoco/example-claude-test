@@ -1,0 +1,218 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Good morning, Alesia</h1>
+      <div class="page-sub">Operations look healthy — 4 alerts need a look.</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost" (click)="navigate('/reports')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+      <button class="btn btn-primary" (click)="navigate('/incoming')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New receipt
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent activity cards -->
+  <div class="recent-scroll">
+    @for (r of recents; track r.label) {
+      <div class="recent-card">
+        <div class="recent-card-head">
+          <div class="recent-card-icon stat-icon" [class]="r.color">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div class="recent-card-title">{{ r.kind }}</div>
+            <div class="recent-card-desc">{{ r.label }}</div>
+          </div>
+        </div>
+        <div class="recent-card-meta">
+          <span class="pill pill-gray">{{ r.time }}</span>
+          <span class="pill" [class]="'pill-' + r.color">{{ r.tag }}</span>
+          <span style="font-size:11px; color:var(--text-muted); margin-left:auto;">{{ r.who }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Charts row -->
+  <div class="col-2">
+    <!-- Area chart -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">User Activity</h3>
+          <div class="card-sub">Active users on the CMS over 31 days</div>
+        </div>
+        <div style="display:flex; gap:4px; padding:4px; background:var(--surface-alt); border-radius:10px;">
+          @for (p of ['Weekly','Monthly','Yearly']; track p) {
+            <button class="btn btn-sm" [class.btn-primary]="p === 'Monthly'" [style.background]="p !== 'Monthly' ? 'transparent' : ''" [style.color]="p !== 'Monthly' ? 'var(--text-muted)' : ''">{{ p }}</button>
+          }
+        </div>
+      </div>
+      <svg viewBox="0 0 760 280" width="100%" height="280" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="area-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        @for (t of [0,100,200,300,400,500]; track t) {
+          <line [attr.x1]="36" [attr.x2]="744" [attr.y1]="20 + (1 - t/550) * 232" [attr.y2]="20 + (1 - t/550) * 232" stroke="var(--border)" stroke-dasharray="3 4"/>
+          <text [attr.x]="28" [attr.y]="24 + (1 - t/550) * 232" font-size="10" fill="var(--text-faint)" text-anchor="end">{{ t }}</text>
+        }
+        <path [attr.d]="areaPath" fill="url(#area-fill)"/>
+        <path [attr.d]="linePath" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Stats card -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Statistics</h3>
+          <div class="card-sub">User segments · today</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:center;">
+        <div class="legend">
+          @for (s of data.statsToday; track s.name) {
+            <div class="legend-item">
+              <span class="legend-swatch" [style.background]="s.color"></span>
+              <div>
+                <div class="legend-name">{{ s.name }}</div>
+                <div class="legend-value">{{ s.value.toLocaleString() }}</div>
+              </div>
+            </div>
+          }
+        </div>
+        <!-- Simple bar chart -->
+        <svg viewBox="0 0 120 200" width="100%" height="200" preserveAspectRatio="none">
+          @for (s of data.statsToday; track s.name; let i = $index) {
+            <rect [attr.x]="i * 28 + 4" y="20" width="16" height="160" rx="8" fill="var(--surface-alt)"/>
+            <rect [attr.x]="i * 28 + 4" [attr.y]="20 + 160 * (1 - s.pct/100)" width="16" [attr.height]="160 * s.pct/100" rx="8" [attr.fill]="s.color"/>
+            <text [attr.x]="i * 28 + 12" y="195" font-size="9" [attr.fill]="s.color" text-anchor="middle" font-weight="600">{{ s.pct }}%</text>
+          }
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat tiles -->
+  <div class="stat-grid">
+    @for (t of tiles; track t.label) {
+      <div class="stat-tile">
+        <div class="stat-tile-head">
+          <div class="stat-icon" [class]="t.color">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+        </div>
+        <div class="stat-label">{{ t.label }}</div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <div class="stat-value">{{ t.val }}</div>
+          <div class="stat-delta" [class.up]="t.up" [class.down]="!t.up">{{ t.delta }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Donut tiles -->
+  <div class="donut-grid">
+    @for (d of donuts; track d.label) {
+      <div class="donut-tile">
+        <div class="donut-tile-head">
+          <div>
+            <div class="donut-tile-name">{{ d.label }}</div>
+            <div style="font-size:18px; font-weight:700; margin-top:2px;" [style.color]="d.color">{{ d.pct }}%</div>
+          </div>
+        </div>
+        <div class="donut-graphic">
+          <!-- SVG donut -->
+          <svg width="112" height="112" viewBox="0 0 112 112">
+            <circle cx="56" cy="56" r="46" fill="none" stroke="var(--surface-alt)" stroke-width="12"/>
+            <circle cx="56" cy="56" r="46" fill="none" [attr.stroke]="d.color" stroke-width="12"
+              [attr.stroke-dasharray]="2 * 3.14159 * 46 * d.pct / 100 + ' ' + 2 * 3.14159 * 46"
+              stroke-linecap="round" transform="rotate(-90 56 56)"/>
+          </svg>
+        </div>
+        <div style="font-size:20px; font-weight:700; text-align:center; letter-spacing:-0.01em;">{{ d.val }}</div>
+        <button class="donut-cta" [style.color]="d.color" [style.border-color]="d.color">View All</button>
+      </div>
+    }
+  </div>
+
+  <!-- Bottom two-col -->
+  <div class="col-2">
+    <!-- Marketplace performance -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Marketplace performance</h3>
+          <div class="card-sub">Last 30 days · revenue &amp; order count</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" (click)="navigate('/outgoing')">View channel</button>
+      </div>
+      <table class="data-table" style="margin:-20px -20px -20px -20px; width:calc(100% + 40px);">
+        <thead>
+          <tr>
+            <th style="padding-left:20px;">Channel</th>
+            <th>Orders (30d)</th>
+            <th>Revenue</th>
+            <th>Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of data.marketplaces.slice(0,5); track m.id) {
+            <tr>
+              <td style="padding-left:20px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div class="mp-logo" [style.background]="m.color">{{ m.initials }}</div>
+                  <span class="cell-strong">{{ m.name }}</span>
+                </div>
+              </td>
+              <td class="tnum">{{ m.orders.toLocaleString() }}</td>
+              <td class="tnum cell-strong">{{ data.formatIDR(m.revenue) }}</td>
+              <td>
+                <div style="display:flex; align-items:center; gap:8px; max-width:180px;">
+                  <div style="flex:1; height:6px; background:var(--surface-alt); border-radius:999px;">
+                    <div [style.width.%]="marketShare(m.revenue)" style="height:100%; border-radius:999px;" [style.background]="m.color"></div>
+                  </div>
+                  <span class="cell-muted tnum" style="font-size:11.5px; min-width:26px;">{{ marketShare(m.revenue) }}%</span>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Low-stock alerts -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Low-stock alerts</h3>
+          <div class="card-sub">Below minimum threshold</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" (click)="navigate('/inventory')">All</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        @for (p of lowStock; track p.id) {
+          <div style="display:flex; align-items:center; gap:12px; padding:10px 12px; background:var(--surface-alt); border-radius:12px;">
+            <div class="prod-thumb" style="width:34px; height:34px; flex-basis:34px;"></div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:600; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ p.name }}</div>
+              <div style="font-size:11px; color:var(--text-muted);">{{ p.sku }}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:700; font-size:13px;" [style.color]="p.stock === 0 ? 'var(--accent-coral)' : 'var(--accent-yellow)'">{{ p.stock }}</div>
+              <div style="font-size:10px; color:var(--text-muted);">min {{ p.min }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

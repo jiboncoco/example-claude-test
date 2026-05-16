@@ -1,0 +1,140 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Users &amp; Roles</h1>
+      <div class="page-sub">{{ activeCount }} active · {{ data.roles.length }} roles</div>
+    </div>
+    <button class="btn btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Invite user
+    </button>
+  </div>
+
+  <div class="page-tabs">
+    <button class="page-tab" [class.active]="activeTab() === 'users'" (click)="activeTab.set('users')">
+      Users <span class="tab-count">{{ data.users.length }}</span>
+    </button>
+    <button class="page-tab" [class.active]="activeTab() === 'roles'" (click)="activeTab.set('roles')">
+      Roles <span class="tab-count">{{ data.roles.length }}</span>
+    </button>
+  </div>
+
+  <!-- Users list -->
+  @if (activeTab() === 'users') {
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="search" placeholder="Search users…" [value]="search()" (input)="search.set($any($event.target).value)"/>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Last active</th>
+            <th>Joined</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of filteredUsers; track u.id) {
+            <tr (click)="openUser.set(u)" style="cursor:pointer;">
+              <td>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="avatar" [style.background]="avatarColor(u.color)">{{ u.initials }}</div>
+                  <div>
+                    <div class="cell-strong">{{ u.name }}</div>
+                    <div class="cell-muted" style="font-size:11px;">{{ u.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td><span [class]="roleColor(u.role)">{{ u.role }}</span></td>
+              <td>
+                <span class="pill" [class]="u.status === 'active' ? 'pill-green' : 'pill-gray'">
+                  <span class="pill-dot"></span>{{ u.status }}
+                </span>
+              </td>
+              <td class="cell-muted" style="font-size:13px;">{{ u.last }}</td>
+              <td class="cell-muted" style="font-size:13px;">{{ u.joined }}</td>
+              <td (click)="$event.stopPropagation()">
+                <button class="icon-btn" style="width:30px; height:30px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+          }
+          @if (filteredUsers.length === 0) {
+            <tr><td colspan="6"><div class="empty">No users match the search.</div></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Roles list -->
+  @if (activeTab() === 'roles') {
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+      @for (r of data.roles; track r.id) {
+        <div class="card" style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                <span [class]="badgeColor(r.badge)" style="font-size:12px;">{{ r.name }}</span>
+              </div>
+              <div style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">{{ r.desc }}</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid var(--border);">
+            <span style="font-size:13px; color:var(--text-muted);">{{ r.users }} user{{ r.users !== 1 ? 's' : '' }}</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-ghost btn-sm">Edit</button>
+              <button class="btn btn-ghost btn-sm">View users</button>
+            </div>
+          </div>
+        </div>
+      }
+      <!-- Create custom role card -->
+      <div class="card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:120px; border:2px dashed var(--border); background:var(--surface-alt); cursor:pointer; box-shadow:none;">
+        <div style="width:36px; height:36px; border-radius:8px; background:var(--surface); border:1px solid var(--border); display:grid; place-items:center; color:var(--text-faint);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <span style="font-size:13px; font-weight:600; color:var(--text-muted);">Create custom role</span>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- User detail modal -->
+@if (openUser()) {
+  <div class="modal-backdrop" (click)="openUser.set(null)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3 class="modal-title">User detail</h3>
+        <button class="icon-btn" (click)="openUser.set(null)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="user-banner">
+          <div class="avatar xl" [style.background]="avatarColor(openUser()!.color)">{{ openUser()!.initials }}</div>
+          <div>
+            <div style="font-size:17px; font-weight:700; letter-spacing:-0.01em;">{{ openUser()!.name }}</div>
+            <div style="font-size:13px; color:var(--text-muted); margin:2px 0 8px;">{{ openUser()!.email }}</div>
+            <span [class]="roleColor(openUser()!.role)">{{ openUser()!.role }}</span>
+          </div>
+        </div>
+        <div class="field-stack" style="margin-top:20px;">
+          <div class="detail-meta-row"><div class="detail-meta-label">Status</div><div class="detail-meta-val"><span class="pill" [class]="openUser()!.status === 'active' ? 'pill-green' : 'pill-gray'">{{ openUser()!.status }}</span></div></div>
+          <div class="detail-meta-row"><div class="detail-meta-label">Last active</div><div class="detail-meta-val">{{ openUser()!.last }}</div></div>
+          <div class="detail-meta-row"><div class="detail-meta-label">Joined</div><div class="detail-meta-val">{{ openUser()!.joined }}</div></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-danger">Remove user</button>
+        <button class="btn btn-ghost" (click)="openUser.set(null)">Close</button>
+        <button class="btn btn-primary">Edit user</button>
+      </div>
+    </div>
+  </div>
+}

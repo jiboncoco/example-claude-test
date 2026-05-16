@@ -1,0 +1,102 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">My profile</h1>
+      <div class="page-sub">Manage your account settings and preferences</div>
+    </div>
+  </div>
+
+  <div class="profile-grid">
+    <!-- Left rail -->
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <!-- Hero card -->
+      <div class="card">
+        <div class="profile-card-hero">
+          <div class="avatar" style="width:88px; height:88px; flex-basis:88px; font-size:32px; border-radius:22px; background:linear-gradient(135deg, var(--accent-purple), var(--accent-coral));">
+            {{ data.currentUser.initials }}
+          </div>
+          <div>
+            <div class="profile-hero-name">{{ data.currentUser.name }}</div>
+            <div class="profile-hero-role">{{ data.currentUser.role }}</div>
+          </div>
+          <span class="pill pill-green" style="font-size:11px;"><span class="pill-dot"></span>Active now</span>
+        </div>
+        <div class="profile-stat-row">
+          <div class="profile-stat-cell">
+            <div class="profile-stat-value">142</div>
+            <div class="profile-stat-label">Actions</div>
+          </div>
+          <div class="profile-stat-cell">
+            <div class="profile-stat-value">38</div>
+            <div class="profile-stat-label">Receipts</div>
+          </div>
+          <div class="profile-stat-cell">
+            <div class="profile-stat-value">12</div>
+            <div class="profile-stat-label">Reports</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <div class="card">
+        <nav class="profile-nav">
+          @for (s of sections; track s.id) {
+            <button class="profile-nav-item" [class.active]="activeSection() === s.id" (click)="activeSection.set(s.id)">
+              {{ s.label }}
+            </button>
+          }
+        </nav>
+      </div>
+    </div>
+
+    <!-- Right content -->
+    <div class="card">
+      @if (activeSection() === 'overview') {
+        <div class="card-header">
+          <h3 class="card-title">Overview</h3>
+          <button class="btn btn-ghost btn-sm">Edit profile</button>
+        </div>
+        <div class="field-stack">
+          <div class="detail-meta-row"><div class="detail-meta-label">Full name</div><div class="detail-meta-val">{{ data.currentUser.name }}</div></div>
+          <div class="detail-meta-row"><div class="detail-meta-label">Email</div><div class="detail-meta-val">{{ data.currentUser.email }}</div></div>
+          <div class="detail-meta-row"><div class="detail-meta-label">Role</div><div class="detail-meta-val"><span class="pill pill-purple">{{ data.currentUser.role }}</span></div></div>
+          <div class="detail-meta-row"><div class="detail-meta-label">Member since</div><div class="detail-meta-val">January 12, 2024</div></div>
+          <div class="detail-meta-row"><div class="detail-meta-label">Workspace</div><div class="detail-meta-val">WareSync · Stock &amp; Sales CMS</div></div>
+        </div>
+      }
+      @if (activeSection() === 'security') {
+        <div class="card-header">
+          <h3 class="card-title">Security</h3>
+        </div>
+        <div class="field-stack">
+          <div class="detail-section">
+            <div class="detail-section-label">Password</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div>
+                <div style="font-size:14px; font-weight:500;">Change password</div>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Last changed 60 days ago</div>
+              </div>
+              <button class="btn btn-ghost btn-sm">Change</button>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-section-label">Two-factor authentication</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div>
+                <div style="font-size:14px; font-weight:500;">Authenticator app</div>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Not configured</div>
+              </div>
+              <button class="btn btn-soft btn-sm">Enable 2FA</button>
+            </div>
+          </div>
+        </div>
+      }
+      @if (activeSection() !== 'overview' && activeSection() !== 'security') {
+        <div class="card-header">
+          <h3 class="card-title">{{ getSectionLabel() }}</h3>
+        </div>
+        <div class="empty" style="padding:32px 0;">This section is coming soon.</div>
+      }
+    </div>
+  </div>
+</div>

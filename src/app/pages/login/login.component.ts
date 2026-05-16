@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,11 +13,12 @@ export class LoginComponent {
   form: FormGroup;
   loading = signal(false);
   errorMessage = '';
+  showPassword = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required]],
     });
   }
 
@@ -30,10 +32,18 @@ export class LoginComponent {
     }
     this.loading.set(true);
     this.errorMessage = '';
-    // Placeholder: replace with real authentication call
     setTimeout(() => {
-      console.log('Login submitted:', this.form.value);
       this.loading.set(false);
-    }, 1000);
+      this.router.navigate(['/']);
+    }, 800);
+  }
+
+  forgotPassword(): void {
+    if (!this.email.value || this.email.invalid) {
+      this.errorMessage = 'Enter your work email above first.';
+      return;
+    }
+    this.errorMessage = '';
+    alert(`Password reset instructions sent to ${this.email.value}`);
   }
 }

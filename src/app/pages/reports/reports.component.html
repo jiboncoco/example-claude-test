@@ -1,0 +1,44 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Reports</h1>
+      <div class="page-sub">{{ data.reportTypes.length }} report types available</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export all
+      </button>
+      <button class="btn btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Custom report
+      </button>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:16px;">
+    @for (r of data.reportTypes; track r.id) {
+      <div class="card" style="display:flex; gap:16px; cursor:pointer; transition:box-shadow 100ms; align-items:flex-start;">
+        <div [class]="iconColor(r.color)" style="width:44px; height:44px; border-radius:10px; flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:15px; font-weight:600; letter-spacing:-0.01em; margin-bottom:4px;">{{ r.name }}</div>
+          <div style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:12px;">{{ r.desc }}</div>
+          <div style="display:flex; align-items:center; gap:12px; font-size:12px; color:var(--text-faint);">
+            <span>Last: {{ r.last }}</span>
+            <span>·</span>
+            <span>{{ r.size }}</span>
+            <div style="margin-left:auto; display:flex; gap:6px;">
+              <button class="btn btn-ghost btn-sm" (click)="$event.stopPropagation()">Preview</button>
+              <button class="btn btn-soft btn-sm" (click)="$event.stopPropagation()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
