@@ -39,4 +39,6 @@ export class OutgoingComponent {
 
   totalOnline(): number { return this.data.onlineOrders.reduce((a, b) => a + b.value, 0); }
   totalOffline(): number { return this.data.offlineSales.reduce((a, b) => a + b.value, 0); }
+  totalSupplierReturns(): number { return this.data.supplierReturns.reduce((a, b) => a + b.value, 0); }
+  totalDamaged(): number { return this.data.damagedGoods.reduce((a, b) => a + b.value, 0); }
 }

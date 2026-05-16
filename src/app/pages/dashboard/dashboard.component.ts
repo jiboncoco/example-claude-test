@@ -18,10 +18,10 @@ export class DashboardComponent {
   ];
 
   readonly recents = [
-    { kind: 'Inventory', label: 'New product — Aurelia Field Jacket', time: '11:32', who: 'May Padilla', tag: 'Inventory', color: 'purple' },
-    { kind: 'Categories', label: 'Category<Templates> updated', time: '11:20', who: 'Erik Pitman', tag: 'Categories', color: 'yellow' },
-    { kind: 'Receipt', label: 'GR-2026-0148 from Northwind', time: '11:32', who: 'Erik Pitman', tag: 'Incoming', color: 'green' },
-    { kind: 'New User', label: 'Lucinda Wills joined as Sales Staff', time: '11:32', who: 'Alesia K.', tag: 'Users', color: 'coral' },
+    { kind: 'About Page', label: 'New product — Aurelia Field Jacket', time: '11:32', who: 'May Padilla', tag: 'Inventory', color: 'purple', icon: 'box' },
+    { kind: 'Category', label: 'Category<Templates> updated', time: '11:20', who: 'Erik Pitman', tag: 'Categories', color: 'yellow', icon: 'tag' },
+    { kind: 'Receipt', label: 'GR-2026-0148 from Northwind', time: '11:32', who: 'Erik Pitman', tag: 'Incoming', color: 'green', icon: 'inbox' },
+    { kind: 'New User', label: 'Lucinda Wills joined as Sales Staff', time: '11:32', who: 'Alesia K.', tag: 'Users', color: 'coral', icon: 'users' },
   ];
 
   readonly donuts = [

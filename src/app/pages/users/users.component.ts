@@ -10,18 +10,54 @@ import { DataService, User } from '../../services/data.service';
   templateUrl: './users.component.html',
 })
 export class UsersComponent {
-  activeTab = signal<'users'|'roles'>('users');
+  activeTab = signal<'users'|'roles'|'perms'|'activity'>('users');
   search = signal('');
+  roleFilter = signal('all');
   openUser = signal<User | null>(null);
+
+  readonly modules = ['Dashboard','Inventory','Suppliers','Incoming Goods','Outgoing Goods','Returns','Marketplaces','Reports','Users & Roles'];
+
+  readonly permMap: Record<string, Record<string, boolean>> = {
+    'r-1': Object.fromEntries(this.modules.map(m => [m, true])),
+    'r-2': Object.fromEntries(this.modules.map(m => [m, true])),
+    'r-3': Object.fromEntries(this.modules.map(m => [m, ['Dashboard','Inventory','Suppliers','Incoming Goods','Outgoing Goods','Returns'].includes(m)])),
+    'r-4': Object.fromEntries(this.modules.map(m => [m, ['Dashboard','Inventory','Outgoing Goods','Reports'].includes(m)])),
+    'r-5': Object.fromEntries(this.modules.map(m => [m, ['Dashboard','Reports'].includes(m)])),
+  };
+
+  readonly activityLog = [
+    { user: 'Alesia Karpova', action: 'Invited Lucinda Wills as Sales Staff', module: 'Users', time: '2026-05-09 09:12' },
+    { user: 'Alesia Karpova', action: 'Changed role: Erik Pitman → Warehouse Staff', module: 'Users', time: '2026-05-08 14:22' },
+    { user: 'Cardi Bautista', action: 'Updated Manager role permissions', module: 'Roles', time: '2026-05-07 11:05' },
+    { user: 'Alesia Karpova', action: 'Deactivated Erik Pitman', module: 'Users', time: '2026-05-06 16:48' },
+    { user: 'Alesia Karpova', action: 'Created Finance Staff role', module: 'Roles', time: '2026-05-01 10:00' },
+  ];
 
   constructor(public data: DataService) {}
 
+  get activeCount() { return this.data.users.filter(u => u.status === 'active').length; }
+
   get filteredUsers() {
     const s = this.search().toLowerCase();
-    return this.data.users.filter(u => !s || `${u.name} ${u.email} ${u.role}`.toLowerCase().includes(s));
+    const rf = this.roleFilter();
+    return this.data.users.filter(u => {
+      if (rf !== 'all' && u.role !== rf) return false;
+      if (s && !`${u.name} ${u.email}`.toLowerCase().includes(s)) return false;
+      return true;
+    });
   }
 
-  get activeCount() { return this.data.users.filter(u => u.status === 'active').length; }
+  toggleStatus(u: User) {
+    u.status = u.status === 'active' ? 'inactive' : 'active';
+  }
+
+  hasAccess(roleId: string, module: string): boolean {
+    return this.permMap[roleId]?.[module] ?? false;
+  }
+
+  getInitials(name: string): string {
+    return name.split(' ').map(n => n[0]).join('');
+  }
 
   avatarColor(color: string): string {
     const map: Record<string, string> = {
