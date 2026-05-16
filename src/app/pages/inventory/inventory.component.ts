@@ -18,6 +18,10 @@ export class InventoryComponent {
   page = signal(1);
   openProduct = signal<Product | null>(null);
   showAddModal = signal(false);
+
+  addForm = { name: '', sku: '', category: 'Electronics', brand: 'Northwind',
+    supplier: 'Northwind Distribution', stock: '', min: '10', purchase: '', price: '' };
+
   readonly PAGE = 8;
 
   readonly filtered = computed(() => {
@@ -42,16 +46,10 @@ export class InventoryComponent {
     return r;
   });
 
-  readonly slice = computed(() => {
-    const p = this.page();
-    return this.filtered().slice((p - 1) * this.PAGE, p * this.PAGE);
-  });
-
+  readonly slice = computed(() => this.filtered().slice((this.page() - 1) * this.PAGE, this.page() * this.PAGE));
   readonly pages = computed(() => Math.max(1, Math.ceil(this.filtered().length / this.PAGE)));
-
   readonly pageNums = computed(() => {
-    const total = this.pages();
-    const cur = this.page();
+    const total = this.pages(), cur = this.page();
     const nums: (number|string)[] = [];
     for (let i = 1; i <= total; i++) {
       if (i === 1 || i === total || Math.abs(i - cur) <= 1) nums.push(i);
@@ -64,6 +62,7 @@ export class InventoryComponent {
   get inStock() { return this.data.products.filter(p => p.stock > 0).length; }
   get lowStock() { return this.data.products.filter(p => p.stock > 0 && p.stock < p.min).length; }
   get outStock() { return this.data.products.filter(p => p.stock === 0).length; }
+  get addValid() { return this.addForm.name && this.addForm.sku && this.addForm.stock && this.addForm.price; }
 
   constructor(public data: DataService) {}
 
@@ -92,11 +91,27 @@ export class InventoryComponent {
     return 'OK';
   }
 
-  setPage(n: number | string) {
-    if (typeof n === 'number') this.page.set(n);
-  }
-
+  setPage(n: number | string) { if (typeof n === 'number') this.page.set(n); }
   filterCat(c: string) { this.cat.set(c); this.page.set(1); }
   filterStatus(s: string) { this.status.set(s); this.page.set(1); }
   onSearch(v: string) { this.search.set(v); this.page.set(1); }
+
+  openAddModal() {
+    this.addForm = { name: '', sku: '', category: 'Electronics', brand: 'Northwind',
+      supplier: 'Northwind Distribution', stock: '', min: '10', purchase: '', price: '' };
+    this.showAddModal.set(true);
+  }
+
+  saveProduct() {
+    if (!this.addValid) return;
+    const id = 'p-' + Math.random().toString(36).slice(2, 7);
+    this.data.products.unshift({
+      id, sku: this.addForm.sku, name: this.addForm.name,
+      category: this.addForm.category, brand: this.addForm.brand,
+      supplier: this.addForm.supplier, stock: +this.addForm.stock,
+      min: +this.addForm.min, purchase: +this.addForm.purchase,
+      price: +this.addForm.price, status: 'active', updated: 'just now', sold30: 0,
+    });
+    this.showAddModal.set(false);
+  }
 }

@@ -15,7 +15,11 @@ export class IncomingComponent {
   openReceipt = signal<IncomingReceipt | null>(null);
   showNewModal = signal(false);
 
-  constructor(public data: DataService) {}
+  newForm = { supplier: 'Northwind Distribution', date: '', items: '', qty: '', value: '', notes: '' };
+
+  constructor(public data: DataService) {
+    this.newForm.date = new Date().toISOString().slice(0, 10);
+  }
 
   get filtered() {
     const s = this.search().toLowerCase();
@@ -34,22 +38,29 @@ export class IncomingComponent {
     return 'pill pill-gray';
   }
 
-  totalValue(): number {
-    return this.data.incoming.reduce((a, b) => a + b.value, 0);
-  }
-
-  totalQty(): number {
-    return this.data.incoming.reduce((a, b) => a + b.qty, 0);
-  }
+  totalValue(): number { return this.data.incoming.reduce((a, b) => a + b.value, 0); }
 
   get receivedCount() { return this.data.incoming.filter(r => r.status === 'received').length; }
   get partialCount() { return this.data.incoming.filter(r => r.status === 'partial').length; }
   get pendingCount() { return this.data.incoming.filter(r => r.status === 'pending').length; }
 
-  readonly statTiles = [
-    { label: 'Total Receipts', color: 'purple' },
-    { label: 'Received', color: 'green' },
-    { label: 'Partial', color: 'blue' },
-    { label: 'Pending QC', color: 'yellow' },
-  ];
+  openNew() {
+    this.newForm = { supplier: 'Northwind Distribution', date: new Date().toISOString().slice(0, 10), items: '', qty: '', value: '', notes: '' };
+    this.showNewModal.set(true);
+  }
+
+  saveReceipt() {
+    const num = String(this.data.incoming.length + 149).padStart(4, '0');
+    this.data.incoming.unshift({
+      id: `GR-2026-0${num}`,
+      supplier: this.newForm.supplier,
+      items: +this.newForm.items || 0,
+      qty: +this.newForm.qty || 0,
+      value: +this.newForm.value || 0,
+      date: this.newForm.date,
+      status: 'pending',
+      notes: this.newForm.notes,
+    });
+    this.showNewModal.set(false);
+  }
 }

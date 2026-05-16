@@ -13,7 +13,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export
       </button>
-      <button class="btn btn-primary" (click)="showAddModal.set(true)">
+      <button class="btn btn-primary" (click)="openAddModal()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add product
       </button>
@@ -122,6 +122,95 @@
     </div>
   </div>
 </div>
+
+<!-- Add Product modal -->
+@if (showAddModal()) {
+  <div class="modal-backdrop" (click)="showAddModal.set(false)">
+    <div class="modal lg" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3 class="modal-title">Add new product</h3>
+        <button class="icon-btn" (click)="showAddModal.set(false)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="field-stack">
+          <div class="field">
+            <label>Product name *</label>
+            <input class="input" [(ngModel)]="addForm.name" placeholder="e.g. Aurelia Cotton Crew Tee"/>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>SKU *</label>
+              <input class="input" [(ngModel)]="addForm.sku" placeholder="AU-TEE-118"/>
+            </div>
+            <div class="field">
+              <label>Barcode</label>
+              <input class="input" placeholder="Optional"/>
+            </div>
+          </div>
+          <div class="field-row three">
+            <div class="field">
+              <label>Category</label>
+              <select class="select" [(ngModel)]="addForm.category">
+                @for (c of data.categories; track c.id) {
+                  <option [value]="c.name">{{ c.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label>Brand</label>
+              <select class="select" [(ngModel)]="addForm.brand">
+                @for (b of data.brands; track b) { <option [value]="b">{{ b }}</option> }
+              </select>
+            </div>
+            <div class="field">
+              <label>Supplier</label>
+              <select class="select" [(ngModel)]="addForm.supplier">
+                @for (s of data.suppliers; track s.id) {
+                  <option [value]="s.name">{{ s.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="field-row three">
+            <div class="field">
+              <label>Stock qty *</label>
+              <input class="input" type="number" [(ngModel)]="addForm.stock" placeholder="0"/>
+            </div>
+            <div class="field">
+              <label>Min alert</label>
+              <input class="input" type="number" [(ngModel)]="addForm.min"/>
+            </div>
+            <div class="field">
+              <label>Status</label>
+              <select class="select"><option>Active</option><option>Inactive</option></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Purchase price (Rp) *</label>
+              <input class="input" type="number" [(ngModel)]="addForm.purchase" placeholder="0"/>
+            </div>
+            <div class="field">
+              <label>Selling price (Rp) *</label>
+              <input class="input" type="number" [(ngModel)]="addForm.price" placeholder="0"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Description</label>
+            <textarea class="textarea" placeholder="Optional notes about this product…"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" (click)="showAddModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" [disabled]="!addValid" [style.opacity]="addValid ? 1 : 0.5" (click)="saveProduct()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Create product
+        </button>
+      </div>
+    </div>
+  </div>
+}
 
 <!-- Product detail modal -->
 @if (openProduct()) {

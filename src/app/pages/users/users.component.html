@@ -9,7 +9,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export users
       </button>
-      <button class="btn btn-primary">
+      <button class="btn btn-primary" (click)="openInvite()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Invite user
       </button>
@@ -94,7 +94,7 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   </button>
                   <!-- Edit icon -->
-                  <button class="icon-btn" style="width:30px; height:30px;" title="Edit user">
+                  <button class="icon-btn" style="width:30px; height:30px;" title="Edit user" (click)="openEdit(u)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                   </button>
                   <!-- Dots menu -->
@@ -232,6 +232,113 @@
         <button class="btn btn-danger">Remove user</button>
         <button class="btn btn-ghost" (click)="openUser.set(null)">Close</button>
         <button class="btn btn-primary">Edit user</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Invite User modal -->
+@if (showInviteModal()) {
+  <div class="modal-backdrop" (click)="showInviteModal.set(false)">
+    <div class="modal lg" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3 class="modal-title">Invite team members</h3>
+        <button class="icon-btn" (click)="showInviteModal.set(false)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="field-stack">
+          <!-- Info hint -->
+          <div style="display:flex; align-items:flex-start; gap:12px; padding:14px; background:var(--accent-purple-soft); border-radius:12px; border:1px solid rgba(79,70,229,0.18);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">Invitees will receive an email with a link to set up their account. Permissions are inherited from their assigned role.</div>
+          </div>
+
+          <!-- Header row -->
+          <div style="display:grid; grid-template-columns:1.5fr 1fr 1fr 32px; gap:10px; font-size:11px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; padding:0 4px;">
+            <span>Work email</span><span>Full name</span><span>Role</span><span></span>
+          </div>
+
+          @for (row of inviteRows; let i = $index; track i) {
+            <div style="display:grid; grid-template-columns:1.5fr 1fr 1fr 32px; gap:10px; align-items:start;">
+              <input class="input" type="email" [(ngModel)]="row.email" placeholder="name@waresync.io"/>
+              <input class="input" [(ngModel)]="row.name" placeholder="Full name"/>
+              <select class="select" [(ngModel)]="row.role">
+                @for (r of data.roles; track r.id) { <option [value]="r.name">{{ r.name }}</option> }
+              </select>
+              <button type="button" style="width:32px;height:38px;display:grid;place-items:center;color:var(--text-faint);border:none;background:none;cursor:pointer;"
+                [disabled]="inviteRows.length === 1" (click)="removeInviteRow(i)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          }
+
+          <button type="button" class="btn btn-ghost btn-sm" style="align-self:flex-start;" (click)="addInviteRow()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add another
+          </button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" (click)="showInviteModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" (click)="sendInvites()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send {{ inviteRows.length }} invitation{{ inviteRows.length !== 1 ? 's' : '' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Edit User modal -->
+@if (showEditModal() && editingUser()) {
+  <div class="modal-backdrop" (click)="showEditModal.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3 class="modal-title">Edit user</h3>
+        <button class="icon-btn" (click)="showEditModal.set(false)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 16px; background:linear-gradient(135deg, var(--accent-purple-soft), var(--accent-pink-soft)); border-radius:12px; margin-bottom:20px;">
+          <div class="avatar xl" [style.background]="avatarColor(editingUser()!.color)">{{ editingUser()!.initials }}</div>
+          <div>
+            <div style="font-size:15px; font-weight:700;">{{ editingUser()!.name }}</div>
+            <div style="font-size:12px; color:var(--text-muted);">{{ editingUser()!.email }}</div>
+          </div>
+        </div>
+        <div class="field-stack">
+          <div class="field-row">
+            <div class="field"><label>Full name</label><input class="input" [(ngModel)]="editForm.name"/></div>
+            <div class="field"><label>Work email</label><input class="input" type="email" [(ngModel)]="editForm.email"/></div>
+          </div>
+          <div class="field"><label>Phone</label><input class="input" [(ngModel)]="editForm.phone" placeholder="Optional"/></div>
+          <div class="field-row">
+            <div class="field">
+              <label>Role</label>
+              <select class="select" [(ngModel)]="editForm.role">
+                @for (r of data.roles; track r.id) { <option [value]="r.name">{{ r.name }}</option> }
+              </select>
+            </div>
+            <div class="field">
+              <label>Status</label>
+              <select class="select" [(ngModel)]="editForm.status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div style="padding:12px 14px; background:var(--surface-alt); border-radius:10px; font-size:12.5px; color:var(--text-muted);">
+            <span style="font-weight:600;">Password reset:</span> Send a reset link to the user's email address.
+            <button class="btn btn-ghost btn-sm" style="margin-left:8px;">Send reset link</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-danger">Remove user</button>
+        <button class="btn btn-ghost" (click)="showEditModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" (click)="saveEdit()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Save changes
+        </button>
       </div>
     </div>
   </div>

@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService, User } from '../../services/data.service';
 
+interface InviteRow { email: string; name: string; role: string; }
+interface EditForm { name: string; email: string; phone: string; role: string; status: string; }
+
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -14,6 +17,12 @@ export class UsersComponent {
   search = signal('');
   roleFilter = signal('all');
   openUser = signal<User | null>(null);
+  showInviteModal = signal(false);
+  showEditModal = signal(false);
+  editingUser = signal<User | null>(null);
+
+  inviteRows: InviteRow[] = [{ email: '', name: '', role: 'Sales Staff' }];
+  editForm: EditForm = { name: '', email: '', phone: '', role: '', status: 'active' };
 
   readonly modules = ['Dashboard','Inventory','Suppliers','Incoming Goods','Outgoing Goods','Returns','Marketplaces','Reports','Users & Roles'];
 
@@ -47,16 +56,40 @@ export class UsersComponent {
     });
   }
 
-  toggleStatus(u: User) {
-    u.status = u.status === 'active' ? 'inactive' : 'active';
+  toggleStatus(u: User) { u.status = u.status === 'active' ? 'inactive' : 'active'; }
+
+  hasAccess(roleId: string, module: string): boolean { return this.permMap[roleId]?.[module] ?? false; }
+  getInitials(name: string): string { return name.split(' ').map(n => n[0]).join(''); }
+
+  openEdit(u: User) {
+    this.editingUser.set(u);
+    this.editForm = { name: u.name, email: u.email, phone: '', role: u.role, status: u.status };
+    this.showEditModal.set(true);
+    this.openUser.set(null);
   }
 
-  hasAccess(roleId: string, module: string): boolean {
-    return this.permMap[roleId]?.[module] ?? false;
+  saveEdit() {
+    const u = this.editingUser();
+    if (!u) return;
+    u.name = this.editForm.name;
+    u.email = this.editForm.email;
+    u.role = this.editForm.role;
+    u.status = this.editForm.status;
+    this.showEditModal.set(false);
   }
 
-  getInitials(name: string): string {
-    return name.split(' ').map(n => n[0]).join('');
+  openInvite() {
+    this.inviteRows = [{ email: '', name: '', role: 'Sales Staff' }];
+    this.showInviteModal.set(true);
+  }
+
+  addInviteRow() { this.inviteRows = [...this.inviteRows, { email: '', name: '', role: 'Sales Staff' }]; }
+  removeInviteRow(i: number) { this.inviteRows = this.inviteRows.filter((_, idx) => idx !== i); }
+
+  sendInvites() {
+    const valid = this.inviteRows.filter(r => r.email.trim());
+    if (!valid.length) return;
+    this.showInviteModal.set(false);
   }
 
   avatarColor(color: string): string {
@@ -79,7 +112,5 @@ export class UsersComponent {
     return 'pill ' + (map[role] || 'pill-gray');
   }
 
-  badgeColor(badge: string): string {
-    return 'pill pill-' + badge;
-  }
+  badgeColor(badge: string): string { return 'pill pill-' + badge; }
 }
