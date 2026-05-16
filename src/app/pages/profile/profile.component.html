@@ -2,47 +2,73 @@
   <div class="page-header">
     <div>
       <h1 class="page-title">My profile</h1>
-      <div class="page-sub">Manage your account settings and preferences</div>
+      <div class="page-sub">Manage your personal account, notifications and security settings.</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost" (click)="goToUsers()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><circle cx="17" cy="6" r="3"/><path d="M16 14a5 5 0 0 1 6 5"/></svg>
+        Users &amp; Roles
+      </button>
+      <button class="btn btn-danger" (click)="showLogoutConfirm.set(true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Sign out
+      </button>
     </div>
   </div>
 
   <div class="profile-grid">
     <!-- Left rail -->
-    <div style="display:flex; flex-direction:column; gap:16px;">
+    <div style="display:flex; flex-direction:column; gap:16px; position:sticky; top:80px;">
       <!-- Hero card -->
-      <div class="card">
-        <div class="profile-card-hero">
-          <div class="avatar" style="width:88px; height:88px; flex-basis:88px; font-size:32px; border-radius:22px; background:linear-gradient(135deg, var(--accent-purple), var(--accent-coral));">
-            {{ data.currentUser.initials }}
-          </div>
-          <div>
-            <div class="profile-hero-name">{{ data.currentUser.name }}</div>
-            <div class="profile-hero-role">{{ data.currentUser.role }}</div>
-          </div>
-          <span class="pill pill-green" style="font-size:11px;"><span class="pill-dot"></span>Active now</span>
+      <div class="card profile-card-hero">
+        <div class="avatar" style="width:88px; height:88px; flex-basis:88px; font-size:32px; border-radius:22px;" [style.background]="avatarColor(me.color)">
+          {{ me.initials }}
         </div>
+        <div>
+          <div class="profile-hero-name">{{ form.name }}</div>
+          <div class="profile-hero-role">{{ form.title }}</div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+          <span [class]="badgeClass" style="font-size:11px;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg>
+            {{ me.role }}
+          </span>
+          <span class="pill pill-green" style="font-size:11px;"><span class="pill-dot"></span>Active</span>
+        </div>
+        <button class="btn btn-ghost btn-sm">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9M7 14l5-5 5 5"/><path d="M5 3h14"/></svg>
+          Change photo
+        </button>
         <div class="profile-stat-row">
           <div class="profile-stat-cell">
-            <div class="profile-stat-value">142</div>
-            <div class="profile-stat-label">Actions</div>
+            <div class="profile-stat-value">214</div>
+            <div class="profile-stat-label">30-day actions</div>
           </div>
           <div class="profile-stat-cell">
-            <div class="profile-stat-value">38</div>
-            <div class="profile-stat-label">Receipts</div>
+            <div class="profile-stat-value">2y 4m</div>
+            <div class="profile-stat-label">Tenure</div>
           </div>
           <div class="profile-stat-cell">
-            <div class="profile-stat-value">12</div>
-            <div class="profile-stat-label">Reports</div>
+            <div class="profile-stat-value">{{ sessions.length }}</div>
+            <div class="profile-stat-label">Sessions</div>
           </div>
         </div>
       </div>
 
-      <!-- Nav -->
-      <div class="card">
+      <!-- Nav card -->
+      <div class="card" style="padding:8px;">
         <nav class="profile-nav">
-          @for (s of sections; track s.id) {
-            <button class="profile-nav-item" [class.active]="activeSection() === s.id" (click)="activeSection.set(s.id)">
-              {{ s.label }}
+          @for (n of nav; track n.id) {
+            <button class="profile-nav-item" [class.active]="section() === n.id" (click)="section.set(n.id)">
+              @switch (n.icon) {
+                @case ('user') { <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> }
+                @case ('cog') { <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.31.15.58.36.79.62"/></svg> }
+                @case ('shield') { <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg> }
+                @case ('bell') { <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></svg> }
+                @case ('mobile') { <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> }
+                @case ('history') { <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v5l3 2"/></svg> }
+              }
+              <span>{{ n.label }}</span>
             </button>
           }
         </nav>
@@ -50,155 +76,363 @@
     </div>
 
     <!-- Right content -->
-    <div class="card">
-      @switch (activeSection()) {
-        @case ('overview') {
+    <div style="display:flex; flex-direction:column; gap:16px; min-width:0;">
+
+      <!-- Overview -->
+      @if (section() === 'overview') {
+        <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Overview</h3>
-            <button class="btn btn-ghost btn-sm">Edit profile</button>
+            <div>
+              <h3 class="card-title">Personal information</h3>
+              <div class="card-sub">Visible to your workspace teammates.</div>
+            </div>
+            <button class="btn btn-soft btn-sm" (click)="section.set('account')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11-4-4L4 16v4z"/><path d="M14 5l4 4"/></svg>
+              Edit
+            </button>
           </div>
-          <div class="field-stack">
-            <div class="detail-meta-row"><div class="detail-meta-label">Full name</div><div class="detail-meta-val">{{ data.currentUser.name }}</div></div>
-            <div class="detail-meta-row"><div class="detail-meta-label">Email</div><div class="detail-meta-val">{{ data.currentUser.email }}</div></div>
-            <div class="detail-meta-row"><div class="detail-meta-label">Role</div><div class="detail-meta-val"><span class="pill pill-purple">{{ data.currentUser.role }}</span></div></div>
-            <div class="detail-meta-row"><div class="detail-meta-label">Member since</div><div class="detail-meta-val">January 12, 2024</div></div>
-            <div class="detail-meta-row"><div class="detail-meta-label">Workspace</div><div class="detail-meta-val">WareSync · Stock &amp; Sales CMS</div></div>
-            <div class="detail-meta-row"><div class="detail-meta-label">Timezone</div><div class="detail-meta-val">Asia/Jakarta (GMT+7)</div></div>
+          <dl class="kv-grid">
+            <dt>Full name</dt><dd>{{ form.name }}</dd>
+            <dt>Email</dt>
+            <dd style="display:inline-flex; align-items:center; gap:8px;">
+              {{ form.email }}
+              <button class="icon-btn" style="width:24px; height:24px;" (click)="copyEmail()" title="Copy">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </dd>
+            <dt>Phone</dt><dd>{{ form.phone }}</dd>
+            <dt>Job title</dt><dd>{{ form.title }}</dd>
+            <dt>Role</dt>
+            <dd>
+              <span [class]="badgeClass" style="font-size:11.5px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg>
+                {{ me.role }}
+              </span>
+            </dd>
+            <dt>Location</dt>
+            <dd style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              Jakarta HQ
+            </dd>
+            <dt>Joined</dt><dd>{{ me.joined }}</dd>
+          </dl>
+          <div style="margin-top:18px; padding:14px; background:var(--surface-alt); border-radius:10px; font-size:13px; color:var(--text-muted); line-height:1.55;">
+            {{ form.bio }}
           </div>
-        }
-        @case ('account') {
-          <div class="card-header"><h3 class="card-title">Account</h3></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Workspace access</h3>
+              <div class="card-sub">Modules you can view based on your role.</div>
+            </div>
+            <span class="pill pill-gray">{{ enabledModuleCount }} / {{ modules.length }} modules</span>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            @for (m of modules; track m) {
+              <span class="pill" [class]="hasAccess(m) ? badgeClass : 'pill pill-gray'" [style.opacity]="hasAccess(m) ? 1 : 0.45">
+                @if (hasAccess(m)) {
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                } @else {
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                }
+                {{ m }}
+              </span>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Account -->
+      @if (section() === 'account') {
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Account</h3>
+              <div class="card-sub">Personal details and locale preferences.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" (click)="saveProfile()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+              Save changes
+            </button>
+          </div>
           <div class="field-stack">
             <div class="field-row">
-              <div class="field"><label>Full name</label><input class="input" [value]="data.currentUser.name"/></div>
-              <div class="field"><label>Display name</label><input class="input" [value]="data.currentUser.short"/></div>
+              <div class="field"><label>Full name</label><input class="input" [(ngModel)]="form.name"/></div>
+              <div class="field"><label>Job title</label><input class="input" [(ngModel)]="form.title"/></div>
             </div>
-            <div class="field"><label>Work email</label><input class="input" type="email" [value]="data.currentUser.email"/></div>
             <div class="field-row">
-              <div class="field"><label>Phone</label><input class="input" placeholder="+62…"/></div>
-              <div class="field"><label>Timezone</label>
-                <select class="select"><option>Asia/Jakarta (GMT+7)</option><option>Asia/Singapore (GMT+8)</option></select>
+              <div class="field"><label>Email address</label><input class="input" type="email" [(ngModel)]="form.email"/></div>
+              <div class="field"><label>Phone</label><input class="input" type="tel" [(ngModel)]="form.phone"/></div>
+            </div>
+            <div class="field">
+              <label>About</label>
+              <textarea class="textarea" rows="3" [(ngModel)]="form.bio"></textarea>
+            </div>
+            <div class="field-row three">
+              <div class="field">
+                <label>Language</label>
+                <select class="select" [(ngModel)]="form.language">
+                  <option>English (Indonesia)</option>
+                  <option>Bahasa Indonesia</option>
+                  <option>English (United States)</option>
+                </select>
               </div>
-            </div>
-            <div style="display:flex; gap:8px; padding-top:8px;">
-              <button class="btn btn-primary">Save changes</button>
-              <button class="btn btn-ghost">Cancel</button>
-            </div>
-          </div>
-        }
-        @case ('security') {
-          <div class="card-header"><h3 class="card-title">Security</h3></div>
-          <div class="field-stack">
-            <div class="detail-section">
-              <div class="detail-section-label">Password</div>
-              <div style="display:flex; align-items:center; justify-content:space-between;">
-                <div>
-                  <div style="font-size:14px; font-weight:500;">Change password</div>
-                  <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Last changed 60 days ago</div>
-                </div>
-                <button class="btn btn-ghost btn-sm">Change</button>
+              <div class="field">
+                <label>Time zone</label>
+                <select class="select" [(ngModel)]="form.timezone">
+                  <option>Asia/Jakarta · GMT+7</option>
+                  <option>Asia/Makassar · GMT+8</option>
+                  <option>Asia/Jayapura · GMT+9</option>
+                </select>
               </div>
-            </div>
-            <div class="detail-section">
-              <div class="detail-section-label">Two-factor authentication</div>
-              <div style="display:flex; align-items:center; justify-content:space-between;">
-                <div>
-                  <div style="font-size:14px; font-weight:500;">Authenticator app</div>
-                  <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Not configured</div>
-                </div>
-                <button class="btn btn-soft btn-sm">Enable 2FA</button>
-              </div>
-            </div>
-            <div class="detail-section">
-              <div class="detail-section-label">SSO</div>
-              <div style="display:flex; align-items:center; justify-content:space-between;">
-                <div>
-                  <div style="font-size:14px; font-weight:500;">Google Workspace</div>
-                  <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Linked to alesia&#64;waresync.io</div>
-                </div>
-                <span class="pill pill-green"><span class="pill-dot"></span>Connected</span>
+              <div class="field">
+                <label>Week starts on</label>
+                <select class="select" [(ngModel)]="form.weekStart">
+                  <option value="monday">Monday</option>
+                  <option value="sunday">Sunday</option>
+                </select>
               </div>
             </div>
           </div>
-        }
-        @case ('notifications') {
-          <div class="card-header"><h3 class="card-title">Notifications</h3></div>
+        </div>
+      }
+
+      <!-- Security -->
+      @if (section() === 'security') {
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Password</h3>
+              <div class="card-sub">Last changed 47 days ago. Use 12+ characters with a mix of letters, numbers and symbols.</div>
+            </div>
+          </div>
           <div class="field-stack">
-            @for (item of [
-              {label:'Low-stock alerts', desc:'When products drop below their min threshold', email:true, push:true},
-              {label:'New receipts', desc:'Supplier deliveries logged in the system', email:true, push:false},
-              {label:'Approval requests', desc:'Returns and write-offs awaiting your sign-off', email:true, push:true},
-              {label:'Weekly summary', desc:'Operational digest emailed every Monday', email:true, push:false},
-              {label:'Audit alerts', desc:'Suspicious or out-of-policy activity', email:true, push:true}
-            ]; track item.label) {
-              <div class="detail-section" style="padding:14px 0; display:flex; align-items:center; justify-content:space-between; gap:12px;">
-                <div>
-                  <div style="font-size:14px; font-weight:500;">{{ item.label }}</div>
-                  <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">{{ item.desc }}</div>
+            <div class="field"><label>Current password</label><input class="input" type="password" placeholder="••••••••••••"/></div>
+            <div class="field-row">
+              <div class="field"><label>New password</label><input class="input" type="password" placeholder="At least 12 characters"/></div>
+              <div class="field"><label>Confirm new password</label><input class="input" type="password" placeholder="Repeat new password"/></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+              <button class="btn btn-ghost btn-sm">Cancel</button>
+              <button class="btn btn-primary btn-sm" (click)="updatePassword()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                Update password
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Sign-in &amp; security</h3>
+              <div class="card-sub">Protect your account with additional safeguards.</div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div class="invite-setting" (click)="toggleSecurity('twoFactor')">
+              <div>
+                <div style="font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:8px;">
+                  Two-factor authentication
+                  @if (security.twoFactor) {
+                    <span class="pill pill-green" style="font-size:10.5px;">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                      Enabled
+                    </span>
+                  }
                 </div>
-                <div style="display:flex; align-items:center; gap:18px;">
-                  <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; color:var(--text-muted);">
-                    <div class="toggle" [class.on]="item.email"></div>Email
-                  </label>
-                  <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; color:var(--text-muted);">
-                    <div class="toggle" [class.on]="item.push"></div>Push
-                  </label>
+                <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Authenticator app (Google Authenticator · since 2024-09-14)</div>
+              </div>
+              <div class="toggle" [class.on]="security.twoFactor"></div>
+            </div>
+            <div class="invite-setting" (click)="toggleSecurity('allowSso')">
+              <div>
+                <div style="font-size:13px; font-weight:600;">Allow Google SSO</div>
+                <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Sign in with your &#64;waresync.io Google Workspace account.</div>
+              </div>
+              <div class="toggle" [class.on]="security.allowSso"></div>
+            </div>
+            <div class="invite-setting" (click)="toggleSecurity('signInAlerts')">
+              <div>
+                <div style="font-size:13px; font-weight:600;">Sign-in alerts</div>
+                <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Email me when there's a sign-in from a new device or location.</div>
+              </div>
+              <div class="toggle" [class.on]="security.signInAlerts"></div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Notifications -->
+      @if (section() === 'notifications') {
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Notifications</h3>
+              <div class="card-sub">Choose where you want to be reached for each event.</div>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border); border-radius:10px; overflow:hidden;">
+            <div style="display:grid; grid-template-columns:1fr 80px 80px; background:var(--surface-alt); padding:10px 14px; font-size:11px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.05em;">
+              <div>Event</div>
+              <div style="text-align:center;">Email</div>
+              <div style="text-align:center;">Push</div>
+            </div>
+            @for (r of notifRows; track r.label; let i = $index) {
+              <div style="display:grid; grid-template-columns:1fr 80px 80px; padding:14px; align-items:center;" [style.border-top]="i > 0 ? '1px solid var(--border)' : 'none'">
+                <div>
+                  <div style="font-size:13.5px; font-weight:600;">{{ r.label }}</div>
+                  <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">{{ r.desc }}</div>
+                </div>
+                <div style="display:grid; place-items:center;">
+                  <div class="toggle" [class.on]="notifications[r.emailKey]" (click)="toggleNotif(r.emailKey)"></div>
+                </div>
+                <div style="display:grid; place-items:center;">
+                  @if (r.pushKey) {
+                    <div class="toggle" [class.on]="notifications[r.pushKey]" (click)="toggleNotif(r.pushKey)"></div>
+                  } @else {
+                    <span style="font-size:11px; color:var(--text-faint);">—</span>
+                  }
                 </div>
               </div>
             }
           </div>
-        }
-        @case ('sessions') {
-          <div class="card-header"><h3 class="card-title">Active sessions</h3></div>
-          @for (s of [
-            {device:'MacBook Pro · Chrome 132', loc:'Jakarta, ID', ip:'192.168.1.10', time:'Active now', current:true},
-            {device:'iPhone 15 · WareSync iOS', loc:'Jakarta, ID', ip:'192.168.1.45', time:'2 hours ago', current:false},
-            {device:'Windows · Edge', loc:'Surabaya, ID', ip:'114.122.8.221', time:'3 days ago', current:false}
-          ]; track s.ip) {
-            <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--border);">
-              <div style="width:36px; height:36px; border-radius:8px; display:grid; place-items:center; flex-basis:36px;" [style.background]="s.current ? 'var(--accent-green-soft)' : 'var(--surface-alt)'" [style.color]="s.current ? 'var(--accent-green)' : 'var(--text-muted)'">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              </div>
-              <div style="flex:1; min-width:0;">
-                <div style="font-size:13.5px; font-weight:600;">{{ s.device }}</div>
-                <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">{{ s.loc }} · {{ s.ip }}</div>
-              </div>
-              <div style="text-align:right;">
-                <div style="font-size:12px; color:var(--text-muted);">{{ s.time }}</div>
+        </div>
+      }
+
+      <!-- Sessions -->
+      @if (section() === 'sessions') {
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Active sessions</h3>
+              <div class="card-sub">Revoke any session you don't recognise.</div>
+            </div>
+            <button class="btn btn-danger btn-sm" (click)="signOutAllOthers()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+              Sign out everywhere else
+            </button>
+          </div>
+          <div>
+            @for (s of sessions; track s.device; let i = $index; let last = $last) {
+              <div [style.border-bottom]="last ? 'none' : '1px solid var(--border)'" style="display:flex; gap:12px; align-items:center; padding:12px 0;">
+                <div style="width:36px; height:36px; border-radius:8px; display:grid; place-items:center; flex-basis:36px;"
+                     [style.background]="s.current ? 'var(--accent-green-soft)' : 'var(--surface-alt)'"
+                     [style.color]="s.current ? 'var(--accent-green)' : 'var(--text-muted)'">
+                  @if (s.icon === 'globe') {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+                  } @else {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+                  }
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:13.5px; font-weight:600; display:inline-flex; align-items:center; gap:8px;">
+                    {{ s.device }}
+                    @if (s.current) {
+                      <span class="pill pill-green" style="font-size:10.5px;"><span class="pill-dot"></span>Current</span>
+                    }
+                  </div>
+                  <div style="font-size:11.5px; color:var(--text-muted);">{{ s.meta }}</div>
+                </div>
                 @if (s.current) {
-                  <span class="pill pill-green" style="margin-top:4px; font-size:10.5px;">This device</span>
+                  <button class="btn btn-ghost btn-sm" disabled style="opacity:0.5;">This session</button>
                 } @else {
-                  <button class="btn btn-ghost btn-sm" style="margin-top:4px;">Revoke</button>
+                  <button class="btn btn-danger btn-sm" (click)="revokeSession(i)">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>
+                    Revoke
+                  </button>
                 }
               </div>
-            </div>
-          }
-          <div style="padding-top:14px;">
-            <button class="btn btn-danger btn-sm">Sign out all other sessions</button>
+            }
           </div>
-        }
-        @case ('activity') {
-          <div class="card-header"><h3 class="card-title">Activity</h3></div>
-          <div style="display:flex; flex-direction:column; gap:0;">
-            @for (a of [
-              {action:'Signed in', detail:'MacBook Pro · Jakarta', time:'Today, 09:00'},
-              {action:'Created receipt GR-2026-0148', detail:'Northwind Distribution · 480 units', time:'Today, 11:32'},
-              {action:'Approved return RC-26-00141', detail:'Aurelia Cotton Crew Tee', time:'Yesterday, 16:40'},
-              {action:'Updated user Erik Pitman', detail:'Status changed to inactive', time:'2 days ago'},
-              {action:'Exported Stock Report', detail:'May 2026 · 4.2 MB', time:'3 days ago'}
-            ]; track a.time) {
-              <div style="display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);">
-                <div style="width:8px; height:8px; border-radius:50%; background:var(--accent-purple); margin-top:6px; flex-shrink:0;"></div>
-                <div style="flex:1;">
-                  <div style="font-size:13.5px; font-weight:500;">{{ a.action }}</div>
-                  <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">{{ a.detail }}</div>
+        </div>
+      }
+
+      <!-- Activity -->
+      @if (section() === 'activity') {
+        <div class="card" style="padding:0;">
+          <div style="padding:20px 24px 0;">
+            <div class="card-header" style="margin-bottom:0;">
+              <div>
+                <h3 class="card-title">My activity</h3>
+                <div class="card-sub">Your most recent actions across WareSync.</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:8px 0 4px;">
+            @for (a of activity; track a.time; let i = $index; let last = $last) {
+              <div [style.border-bottom]="last ? 'none' : '1px solid var(--border)'" style="display:flex; align-items:center; gap:14px; padding:14px 24px;">
+                <div class="stat-icon" [class]="a.color" style="width:34px; height:34px; border-radius:10px;">
+                  @switch (a.icon) {
+                    @case ('login') { <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l-5-5 5-5"/><path d="M15 12H3"/></svg> }
+                    @case ('check') { <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg> }
+                    @case ('box') { <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg> }
+                    @case ('shield') { <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg> }
+                    @case ('building') { <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h6M11 21v-3h2v3"/></svg> }
+                    @case ('download') { <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg> }
+                  }
                 </div>
-                <div style="font-size:12px; color:var(--text-faint);">{{ a.time }}</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;">
+                    <span style="color:var(--text-muted);">You</span>
+                    <span style="color:var(--text-muted);"> {{ a.act }} </span>
+                    <span class="cell-mono">{{ a.target }}</span>
+                  </div>
+                </div>
+                <div style="font-size:11.5px; color:var(--text-muted);">{{ a.time }}</div>
               </div>
             }
           </div>
-        }
+        </div>
       }
     </div>
   </div>
 </div>
+
+<!-- Sign-out confirmation modal -->
+@if (showLogoutConfirm()) {
+  <div class="modal-backdrop" (click)="showLogoutConfirm.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3 class="modal-title">Sign out of WareSync?</h3>
+        <button class="icon-btn" (click)="showLogoutConfirm.set(false)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div class="stat-icon coral" style="width:40px; height:40px; flex:0 0 40px; border-radius:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+          <div style="font-size:13.5px; color:var(--text-muted); line-height:1.55;">
+            You'll be signed out of this device, <b style="color:var(--text);">{{ form.name }}</b>.
+            Your other active sessions will remain signed in.
+            <div style="margin-top:10px; padding:10px; background:var(--surface-alt); border-radius:8px; font-size:12.5px; display:flex; align-items:flex-start; gap:8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18v.01"/></svg>
+              <span>Any unsaved drafts (invoices, receipts, role edits) will be discarded.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" (click)="showLogoutConfirm.set(false)">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmSignOut()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          Sign out
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Tiny toast -->
+@if (copyToast()) {
+  <div class="toast-wrap">
+    <div class="toast">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34c38f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+      {{ copyToast() }}
+    </div>
+  </div>
+}

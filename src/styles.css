@@ -315,9 +315,24 @@ table.data-table tbody tr:hover { background: var(--surface-alt); }
 .check { width: 16px; height: 16px; border: 1px solid var(--border-strong); border-radius: 4px; display: grid; place-items: center; cursor: pointer; background: var(--surface); flex: 0 0 16px; }
 .check.checked { background: var(--accent-purple); border-color: var(--accent-purple); color: white; }
 
+/* Invite-style settings rows (also used in Profile > Security) */
+.invite-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 100ms, border-color 100ms;
+}
+.invite-setting:hover { background: var(--surface-alt); }
+
 /* Profile */
 .profile-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: flex-start; }
-.profile-card-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px; gap: 12px; }
+.profile-card-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px; gap: 12px; padding-bottom: 0; }
 .profile-hero-name { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
 .profile-hero-role { font-size: 13px; color: var(--text-muted); }
 .profile-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-top: 1px solid var(--border); margin: 4px -24px -24px; }
@@ -326,9 +341,10 @@ table.data-table tbody tr:hover { background: var(--surface-alt); }
 .profile-stat-value { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
 .profile-stat-label { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
 .profile-nav { display: flex; flex-direction: column; gap: 2px; }
-.profile-nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; }
+.profile-nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; transition: background 100ms, color 100ms; }
 .profile-nav-item:hover { background: var(--surface-alt); color: var(--text); }
-.profile-nav-item.active { background: var(--accent-purple-soft); color: var(--accent-purple); }
+.profile-nav-item.active { background: var(--accent-purple-soft); color: var(--accent-purple); font-weight: 600; }
+.profile-nav-item.active svg { color: var(--accent-purple); }
 
 /* Detail sections */
 .detail-section { padding: 14px 0; border-top: 1px solid var(--border); }
