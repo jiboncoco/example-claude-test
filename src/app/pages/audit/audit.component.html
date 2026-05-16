@@ -14,7 +14,16 @@
     <div class="table-toolbar">
       <div class="search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="search" placeholder="Search by user, action or module…"/>
+        <input class="search" placeholder="Search by user, action or module…" [(ngModel)]="search"/>
+      </div>
+      <button class="filter-chip" [class.active]="moduleFilter === 'all'" (click)="moduleFilter = 'all'">All modules</button>
+      @for (m of modules; track m) {
+        <button class="filter-chip" [class.active]="moduleFilter === m" (click)="moduleFilter = m">{{ m }}</button>
+      }
+      <div style="margin-left:auto; display:flex; gap:6px;">
+        <button class="filter-chip">Today</button>
+        <button class="filter-chip">7 days</button>
+        <button class="filter-chip">30 days</button>
       </div>
     </div>
     <table class="data-table">
@@ -30,12 +39,12 @@
         </tr>
       </thead>
       <tbody>
-        @for (e of entries; track e.id) {
+        @for (e of filteredEntries; track e.id) {
           <tr>
             <td class="cell-mono" style="font-size:11.5px; color:var(--text-faint);">{{ e.id }}</td>
             <td>
               <div style="display:flex; align-items:center; gap:8px;">
-                <div class="avatar" style="width:26px; height:26px; font-size:10px; flex-basis:26px; background:var(--accent-purple);">{{ getInitials(e.user) }}</div>
+                <div class="avatar" style="width:26px; height:26px; font-size:10px; flex-basis:26px; background:linear-gradient(135deg, var(--accent-purple), var(--accent-pink));">{{ getInitials(e.user) }}</div>
                 <span class="cell-strong">{{ e.user }}</span>
               </div>
             </td>
@@ -45,6 +54,9 @@
             <td class="cell-mono" style="font-size:12px; color:var(--text-muted);">{{ e.time }}</td>
             <td class="cell-mono" style="font-size:12px; color:var(--text-muted);">{{ e.ip }}</td>
           </tr>
+        }
+        @if (filteredEntries.length === 0) {
+          <tr><td colspan="7"><div class="empty">No audit entries match these filters.</div></td></tr>
         }
       </tbody>
     </table>

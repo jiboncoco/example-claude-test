@@ -12,6 +12,11 @@ export class ReturnsComponent {
   activeTab = signal<'customer'|'supplier'|'damaged'>('customer');
   constructor(public data: DataService) {}
 
+  get totalCustomer(): number { return this.data.customerReturns.reduce((a, b) => a + b.value, 0); }
+  get totalSupplier(): number { return this.data.supplierReturns.reduce((a, b) => a + b.value, 0); }
+  get totalDamaged(): number { return this.data.damagedGoods.reduce((a, b) => a + b.value, 0); }
+  get pendingCustomer(): number { return this.data.customerReturns.filter(r => r.status === 'pending').length; }
+
   statusClass(s: string): string {
     if (s === 'approved' || s === 'returned') return 'pill pill-green';
     if (s === 'completed') return 'pill pill-purple';

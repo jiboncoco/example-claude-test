@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-audit',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './audit.component.html',
 })
 export class AuditComponent {
@@ -28,6 +29,20 @@ export class AuditComponent {
     };
     return map[m] || 'pill pill-gray';
   }
+
+  moduleFilter = 'all';
+  search = '';
+
+  get filteredEntries() {
+    const s = this.search.toLowerCase();
+    return this.entries.filter(e => {
+      if (this.moduleFilter !== 'all' && e.module !== this.moduleFilter) return false;
+      if (s && !`${e.user} ${e.action} ${e.detail}`.toLowerCase().includes(s)) return false;
+      return true;
+    });
+  }
+
+  readonly modules = ['Inventory','Incoming','Outgoing','Users','Returns','Reports'];
 
   constructor(public data: DataService) {}
 
