@@ -93,15 +93,16 @@ export class UsersComponent {
   }
 
   avatarColor(color: string): string {
+    // Match design: purple↔pink, coral↔yellow, others↔purple
     const map: Record<string, string> = {
-      purple: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-      coral: 'linear-gradient(135deg, #dc2626, #ef4444)',
-      yellow: 'linear-gradient(135deg, #d97706, #f59e0b)',
-      green: 'linear-gradient(135deg, #16a34a, #22c55e)',
-      blue: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-      pink: 'linear-gradient(135deg, #db2777, #ec4899)',
+      purple: 'linear-gradient(135deg, var(--accent-purple), var(--accent-pink))',
+      coral: 'linear-gradient(135deg, var(--accent-coral), var(--accent-yellow))',
+      yellow: 'linear-gradient(135deg, var(--accent-yellow), var(--accent-purple))',
+      green: 'linear-gradient(135deg, var(--accent-green), var(--accent-purple))',
+      blue: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))',
+      pink: 'linear-gradient(135deg, var(--accent-pink), var(--accent-purple))',
     };
-    return map[color] || 'var(--accent-purple)';
+    return map[color] || map['purple'];
   }
 
   roleColor(role: string): string {

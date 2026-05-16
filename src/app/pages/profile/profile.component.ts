@@ -180,11 +180,12 @@ export class ProfileComponent {
   }
 
   avatarColor(color: string): string {
+    // Match design: purple↔pink, coral↔yellow, others↔purple
     const map: Record<string, string> = {
       purple: 'linear-gradient(135deg, var(--accent-purple), var(--accent-pink))',
       coral: 'linear-gradient(135deg, var(--accent-coral), var(--accent-yellow))',
-      yellow: 'linear-gradient(135deg, var(--accent-yellow), var(--accent-coral))',
-      green: 'linear-gradient(135deg, var(--accent-green), var(--accent-blue))',
+      yellow: 'linear-gradient(135deg, var(--accent-yellow), var(--accent-purple))',
+      green: 'linear-gradient(135deg, var(--accent-green), var(--accent-purple))',
       blue: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))',
       pink: 'linear-gradient(135deg, var(--accent-pink), var(--accent-purple))',
     };
