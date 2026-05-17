@@ -1,0 +1,88 @@
+/* ── Header ── */
+.app-header {
+  width: 100%;
+  height: 3.25rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--surface, #fff);
+  border-bottom: 1px solid oklch(90% 0.006 300);
+  box-sizing: border-box;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+:host-context(html.dark) .app-header {
+  border-bottom-color: oklch(26% 0.012 280);
+}
+
+.header-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-brand {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  transition: color 0.25s ease;
+}
+
+/* ── Theme toggle button ── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.375rem 0.5rem;
+  border-radius: 9999px;
+  color: var(--gray-400);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background-color: color-mix(in srgb, var(--gray-400) 12%, transparent);
+}
+
+.toggle-icon {
+  flex-shrink: 0;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+/* ── Toggle track (the pill) ── */
+.toggle-track {
+  position: relative;
+  width: 2.75rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background-color: oklch(80% 0.008 300);
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.toggle-track.is-dark {
+  background-color: oklch(53.18% 0.28 296.97);
+}
+
+/* ── Toggle thumb (the circle) ── */
+.toggle-thumb {
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px oklch(0% 0 0 / 0.25);
+  transition: transform 0.3s ease;
+}
+
+.toggle-track.is-dark .toggle-thumb {
+  transform: translateX(1.25rem);
+}
