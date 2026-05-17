@@ -1,59 +1,70 @@
-# SampleAngularClaude
+# sample-angular-claude
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.11.
+An Angular 19 starter app with a full dark/light mode theme system built with Tailwind CSS v4.
 
-## Development server
+## Screenshots
 
-To start a local development server, run:
+| Light Mode | Dark Mode |
+|---|---|
+| ![Light mode](docs/screenshot-light.png) | ![Dark mode](docs/screenshot-dark.png) |
+
+## Features
+
+- **Dark / Light mode toggle** — pill-shaped switch in the header with sun and moon icons
+- **System preference detection** — defaults to your OS dark/light setting on first visit
+- **Persistent preference** — stores your choice in `localStorage` across sessions
+- **No flash on reload** — an inline script applies the saved theme before Angular boots
+- **Smooth transitions** — 250ms ease on background, text, and border colors
+
+## Tech Stack
+
+- [Angular 19](https://angular.dev) with SSR (Angular Universal)
+- [Tailwind CSS v4](https://tailwindcss.com)
+- TypeScript
+- CSS custom properties for theming (`oklch` color space)
+
+## Getting Started
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open [http://localhost:4200](http://localhost:4200).
 
-## Code scaffolding
+## Project Structure
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+src/
+├── app/
+│   ├── app.ts              # Root component — injects ThemeService
+│   ├── app.html            # Template with header toggle + dark mode CSS vars
+│   ├── app.css             # Header and toggle styles
+│   ├── theme.service.ts    # Manages dark class on <html> + localStorage
+│   └── app.routes.ts
+├── styles.css              # Global Tailwind import + dark mode root styles
+└── index.html              # Anti-flash script in <head>
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Theme System
 
-```bash
-ng generate --help
-```
+`ThemeService` is an Angular injectable that:
 
-## Building
+1. Reads `localStorage` for a saved preference on init
+2. Falls back to `window.matchMedia('(prefers-color-scheme: dark)')` if no preference is saved
+3. Toggles the `dark` class on `<html>` and persists the choice
 
-To build the project run:
+Component styles use `:host-context(html.dark)` to override CSS custom properties (`--gray-900`, `--gray-700`, `--gray-400`, `--bg`, `--surface`) for the dark palette.
+
+## Build
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Testing
 
 ```bash
-ng test
+ng test   # unit tests (Vitest)
+ng e2e    # end-to-end tests
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
